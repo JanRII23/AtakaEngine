@@ -7,6 +7,9 @@ namespace dx3d
 	class SwapChain final: public GraphicsResource
 	{
 	public:
-		SwapChain(const GraphicsResourceDesc& desc);
+		SwapChain(const SwapChainDesc& desc, const GraphicsResourceDesc& gDesc);
+
+	private:
+		Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapChain{};
 	};
 }
