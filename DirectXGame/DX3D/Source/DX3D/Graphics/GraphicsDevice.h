@@ -7,11 +7,11 @@
 
 namespace dx3d
 {
-	class RenderSystem final: public Base, public std::enable_shared_from_this<RenderSystem>
+	class GraphicsDevice final: public Base, public std::enable_shared_from_this<GraphicsDevice>
 	{
 	public:
-		explicit RenderSystem(const RenderSystemDesc& desc);
-		virtual ~RenderSystem() override;
+		explicit GraphicsDevice(const GraphicsDeviceDesc& desc);
+		virtual ~GraphicsDevice() override;
 
 		SwapChainPtr createSwapChain(const SwapChainDesc& desc) const;
 
