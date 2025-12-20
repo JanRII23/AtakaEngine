@@ -4,7 +4,14 @@ using namespace dx3d;
 
 dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.base)
 {
-	m_renderSystem = std::make_unique<RenderSystem>(RenderSystemDesc{m_logger});
+	/*SwapChainPtr sc{};
+
+	{
+		auto sys = std::make_shared<RenderSystem>(RenderSystemDesc{ m_logger });
+		sc = sys->createSwapChain({});
+	}*/
+
+	m_renderSystem = std::make_shared<RenderSystem>(RenderSystemDesc{m_logger});
 }
 
 dx3d::GraphicsEngine::~GraphicsEngine()

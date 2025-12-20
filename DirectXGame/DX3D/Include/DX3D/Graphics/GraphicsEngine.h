@@ -12,7 +12,7 @@ namespace dx3d
 
 		RenderSystem& getRenderSystem() const noexcept;
 	private:
-		std::unique_ptr<RenderSystem> m_renderSystem{};
+		std::shared_ptr<RenderSystem> m_renderSystem{};
 	};
 }
 
