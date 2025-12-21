@@ -1,6 +1,8 @@
 #include <DX3D/Graphics/GraphicsDevice.h>
 #include <DX3D/Graphics/GraphicsLogUtils.h>
 #include <DX3D/Graphics/SwapChain.h>
+#include <DX3D/Graphics/DeviceContext.h>
+
 using namespace dx3d;
 
 dx3d::GraphicsDevice::GraphicsDevice(const GraphicsDeviceDesc& desc): Base(desc.base)
@@ -29,9 +31,22 @@ dx3d::GraphicsDevice::~GraphicsDevice()
 {
 }
 
-SwapChainPtr dx3d::GraphicsDevice::createSwapChain(const SwapChainDesc& desc) const
+SwapChainPtr dx3d::GraphicsDevice::createSwapChain(const SwapChainDesc& desc)
 {
 	return std::make_shared<SwapChain>(desc, getGraphicsResourceDesc());
+}
+
+DeviceContextPtr dx3d::GraphicsDevice::createDeviceContext()
+{
+	return std::make_shared<DeviceContext>(getGraphicsResourceDesc());
+}
+
+void dx3d::GraphicsDevice::executeCommandList(DeviceContext& context)
+{
+	Microsoft::WRL::ComPtr<ID3D11CommandList> list{};
+	DX3DGraphicsLogThrowOnFail(context.m_context->FinishCommandList(false, &list),
+		"FinishCommandList Failed.");
+	m_d3dContext->ExecuteCommandList(list.Get(), false);
 }
 
 GraphicsResourceDesc dx3d::GraphicsDevice::getGraphicsResourceDesc() const noexcept
