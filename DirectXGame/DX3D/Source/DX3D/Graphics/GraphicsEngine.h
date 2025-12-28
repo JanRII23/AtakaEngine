@@ -20,6 +20,7 @@ namespace dx3d
 			Vec3 position;
 			Vec3 position1;
 			Vec4 color;
+			Vec4 color1;
 		};
 	private:
 		std::shared_ptr<GraphicsDevice> m_graphicsDevice{};
