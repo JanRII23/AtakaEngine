@@ -2,6 +2,7 @@
 #include <DX3D/Graphics/SwapChain.h>
 #include <DX3D/Graphics/GraphicsPipelineState.h>
 #include <DX3D/Graphics/VertexBuffer.h>
+#include <DX3D/Graphics/ConstantBuffer.h>
 
 dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc): GraphicsResource(gDesc)
 {
@@ -46,4 +47,14 @@ void dx3d::DeviceContext::drawTriangleList(ui32 vertexCount, ui32 startVertexLoc
 {
 	m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_context->Draw(vertexCount, startVertexLocation);
+}
+
+void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer)
+{
+	constant cc;
+	cc.m_time = ::GetTickCount();
+	auto buf = buffer.m_buffer.Get();
+
+	m_context->UpdateSubresource(buf, NULL, NULL, &cc, NULL, NULL);
+	m_context->VSSetConstantBuffers(0, 1, &buf);
 }

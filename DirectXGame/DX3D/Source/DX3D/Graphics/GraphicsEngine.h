@@ -18,6 +18,7 @@ namespace dx3d
 		struct Vertex
 		{
 			Vec3 position;
+			Vec3 position1;
 			Vec4 color;
 		};
 	private:
@@ -25,6 +26,7 @@ namespace dx3d
 		DeviceContextPtr m_deviceContext{};
 		GraphicsPipelineStatePtr m_pipeline{};
 		VertexBufferPtr m_vb{};
+		ConstantBufferPtr m_cb{};
 	};
 }
 

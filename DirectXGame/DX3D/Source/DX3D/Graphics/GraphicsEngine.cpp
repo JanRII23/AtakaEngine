@@ -3,6 +3,7 @@
 #include <DX3D/Graphics/DeviceContext.h>
 #include <DX3D/Graphics/SwapChain.h>
 #include <DX3D/Graphics/VertexBuffer.h>
+#include <DX3D/Graphics/ConstantBuffer.h>
 #include <DX3D/Math/Vec3.h>
 #include <fstream>
 
@@ -43,16 +44,20 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	const Vertex vertexList[] =
 	{
-		{ {-0.5f, -0.5f, 0.0f}, {1,0,0,1} },
-		{ { -0.5f, 0.5f, 0.0f},{0,1,0,1} },
-		{ { 0.5f, 0.5f, 0.0f}, {0,0,1,1} },
+		{ { -0.5f, -0.5f, 0.0f }, { -0.32f, -0.11f, 0.0f }, {1, 0, 0, 1}},
+		{ { -0.5f, 0.5f, 0.0f }, { -0.11f, 0.78f, 0.0f }, {0, 1, 0, 1}},
+		{ { 0.5f, 0.5f, 0.0f }, { 0.75f, -0.73f, 0.0f }, {0, 0, 1, 1}},
 
-		{ { 0.5f, 0.5f, 0.0f}, {0,0,1,1} },
-		{ { 0.5f, -0.5f, 0.0f}, {1,0,1,1} },
-		{ { -0.5f, -0.5f, 0.0f}, {1,0,0,1} }
+		{ { 0.5f, 0.5f, 0.0f }, { 0.88f, 0.77f, 0.0f }, {0, 0, 1, 1}},
+		{ { 0.5f, -0.5f, 0.0f }, { -0.25f, 0.43f, 0.0f}, {1, 0, 1, 1}},
+		{ { -0.5f, -0.5f, 0.0f }, { -0.32f, -0.11f, 0.0f}, {1, 0, 0, 1}}
 	};
 
 	m_vb = device.createVertexBuffer({vertexList, std::size(vertexList), sizeof(Vertex)});
+
+	constant cc;
+	cc.m_time = 0;
+	m_cb = device.createConstantBuffer({&cc, sizeof(constant)});
 }
 
 dx3d::GraphicsEngine::~GraphicsEngine()
@@ -71,6 +76,9 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	context.setGraphicsPipelineState(*m_pipeline);
 	
 	context.setViewportSize(swapChain.getSize());
+
+	auto& cb = *m_cb;
+	context.setConstantBuffer(cb);
 
 	auto& vb = *m_vb;
 	context.setVertexBuffer(vb);

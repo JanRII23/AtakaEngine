@@ -77,9 +77,21 @@ namespace dx3d
 		ui32 vertexSize{};
 	};
 
+	struct ConstantBufferDesc
+	{
+		const void* buffer{};
+		ui32 size_buffer;
+	};
+
 	struct GameDesc
 	{
 		Rect windowSize{ 1280, 720 };
 		Logger::LogLevel logLevel = Logger::LogLevel::Error;
+	};
+
+	_declspec(align(16))
+	struct constant
+	{
+		unsigned int m_time;
 	};
 }
