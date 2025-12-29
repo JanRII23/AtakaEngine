@@ -2,6 +2,7 @@
 #include <DX3D/Core/Core.h>
 #include <DX3D/Core/Logger.h>
 #include <DX3D/Math/Rect.h>
+#include <DX3D/Math/Matrix4x4.h>
 
 namespace dx3d
 {
@@ -92,6 +93,9 @@ namespace dx3d
 	_declspec(align(16))
 	struct constant
 	{
+		Matrix4x4 m_world;
+		Matrix4x4 m_view;
+		Matrix4x4 m_proj;
 		unsigned int m_time;
 	};
 }

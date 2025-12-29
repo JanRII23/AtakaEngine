@@ -49,10 +49,26 @@ void dx3d::DeviceContext::drawTriangleList(ui32 vertexCount, ui32 startVertexLoc
 	m_context->Draw(vertexCount, startVertexLocation);
 }
 
-void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer)
+void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, const Rect& size)
 {
 	constant cc;
+	RECT rc{ 0, 0, size.width, size.height };
 	cc.m_time = ::GetTickCount();
+	cc.m_world.setTranslationVector3D(Vector3D(0,0,0));
+	cc.m_view.setIdentity();
+	cc.m_proj.setOrthoLH(
+		200.0f / 100.0f,
+		100.0f,
+		-4.0f,
+		4.0f
+	);
+	/*cc.m_proj.setOrthoLH(
+		(rc.right - rc.left) / 100.0f,
+		(rc.bottom - rc.top),
+		-4.0f,
+		4.0f
+	);*/
+
 	auto buf = buffer.m_buffer.Get();
 
 	m_context->UpdateSubresource(buf, NULL, NULL, &cc, NULL, NULL);

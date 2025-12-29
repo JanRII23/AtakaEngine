@@ -53,11 +53,11 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 		{ { -0.5f, -0.5f, 0.0f }, { -0.32f, -0.11f, 0.0f}, { 1, 0, 0, 1 }, { 0, 0, 1, 1 }}
 	};
 
-	m_vb = device.createVertexBuffer({vertexList, std::size(vertexList), sizeof(Vertex)});
-
 	constant cc;
 	cc.m_time = 0;
-	m_cb = device.createConstantBuffer({&cc, sizeof(constant)});
+	m_cb = device.createConstantBuffer({ &cc, sizeof(constant) });
+
+	m_vb = device.createVertexBuffer({vertexList, std::size(vertexList), sizeof(Vertex)});
 }
 
 dx3d::GraphicsEngine::~GraphicsEngine()
@@ -78,7 +78,7 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	context.setViewportSize(swapChain.getSize());
 
 	auto& cb = *m_cb;
-	context.setConstantBuffer(cb);
+	context.setConstantBuffer(cb, swapChain.getSize());
 
 	auto& vb = *m_vb;
 	context.setVertexBuffer(vb);
