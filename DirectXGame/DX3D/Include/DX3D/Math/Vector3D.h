@@ -16,6 +16,15 @@ namespace dx3d
 		Vector3D(const Vector3D& vector) :m_x(vector.m_x), m_y(vector.m_y), m_z(vector.m_z)
 		{
 		}
+		static Vector3D lerp(const Vector3D& start, const Vector3D& end, float delta)
+		{
+			Vector3D v;
+			v.m_x = start.m_x * (1.0f - delta) + end.m_x * (delta);
+			v.m_y = start.m_y * (1.0f - delta) + end.m_y * (delta);
+			v.m_z = start.m_z * (1.0f - delta) + end.m_z * (delta);
+
+			return v;
+		}
 	public:
 		f32 m_x, m_y, m_z;
 	};

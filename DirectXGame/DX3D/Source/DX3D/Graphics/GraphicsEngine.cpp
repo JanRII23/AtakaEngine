@@ -77,8 +77,15 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
+	m_delta_pos += m_delta_time / 10.0f;
+	if (m_delta_pos > 1.0f) {
+		m_delta_pos = 0;
+	}
+
+	m_delta_scale += m_delta_time / 2.0f;
+
 	auto& cb = *m_cb;
-	context.setConstantBuffer(cb, swapChain.getSize());
+	context.setConstantBuffer(cb, swapChain.getSize(), m_delta_pos, m_delta_scale);
 
 	auto& vb = *m_vb;
 	context.setVertexBuffer(vb);
@@ -87,4 +94,9 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	auto& device = *m_graphicsDevice;
 	device.executeCommandList(context);
 	swapChain.present();
+
+	m_old_delta = m_new_delta;
+	m_new_delta = ::GetTickCount64();
+
+	m_delta_time = (m_old_delta) ? ((m_new_delta - m_old_delta) / 1000.0f) : 0;
 }

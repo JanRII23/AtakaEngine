@@ -28,6 +28,12 @@ namespace dx3d
 		GraphicsPipelineStatePtr m_pipeline{};
 		VertexBufferPtr m_vb{};
 		ConstantBufferPtr m_cb{};
+	private:
+		f32 m_old_delta;
+		f32 m_new_delta;
+		f32 m_delta_time;
+		f32 m_delta_pos;
+		f32 m_delta_scale;
 	};
 }
 

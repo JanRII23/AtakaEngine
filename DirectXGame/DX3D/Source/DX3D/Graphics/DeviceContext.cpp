@@ -49,29 +49,34 @@ void dx3d::DeviceContext::drawTriangleList(ui32 vertexCount, ui32 startVertexLoc
 	m_context->Draw(vertexCount, startVertexLocation);
 }
 
-void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, const Rect& size)
+void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, const Rect& size, f32 m_delta_pos, f32 m_delta_scale)
 {
 	constant cc;
-	RECT rc{ 0, 0, size.width, size.height };
-	cc.m_time = ::GetTickCount();
-	cc.m_world.setTranslationVector3D(Vector3D(0,0,0));
+	//RECT rc{ 0, 0, size.width, size.height };
+
+	cc.m_time = ::GetTickCount64();
+	//cc.m_world.setTranslationVector3D(Vector3D::lerp(Vector3D(-2, -2, 0), Vector3D(2, 2, 0), m_delta_pos));
+	cc.m_world.setScaleVector3D(Vector3D::lerp(Vector3D(0.5, 0.5, 0), Vector3D(2, 2, 0), (sin(m_delta_scale) + 1.0f) / 2.0f));
 	cc.m_view.setIdentity();
+
+	//NOTE: setting an override for now, but ideally needs to be tied to window size set by the user
 	cc.m_proj.setOrthoLH(
 		200.0f / 100.0f,
 		100.0f,
 		-4.0f,
 		4.0f
 	);
-	/*cc.m_proj.setOrthoLH(
-		(rc.right - rc.left) / 100.0f,
-		(rc.bottom - rc.top),
-		-4.0f,
-		4.0f
-	);*/
+	
+	//cc.m_proj.setOrthoLH(
+	//	((rc.right - rc.left) / 10.0f) + std::abs(widthExtra),
+	//	((rc.bottom - rc.top) / 10.0f) + std::abs(heightExtra),
+	//	-4.0f,
+	//	4.0f
+	//);
 
 	auto buf = buffer.m_buffer.Get();
 
 	m_context->UpdateSubresource(buf, NULL, NULL, &cc, NULL, NULL);
 	m_context->VSSetConstantBuffers(0, 1, &buf);
-	//m_context->PSSetConstantBuffers(0, 1, buffer.m_buffer.GetAddressOf());
+	m_context->PSSetConstantBuffers(0, 1, &buf);
 }

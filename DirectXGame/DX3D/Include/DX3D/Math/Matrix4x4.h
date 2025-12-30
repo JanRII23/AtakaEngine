@@ -31,6 +31,14 @@ namespace dx3d
 			m_mat[3][2] = translation.m_z;
 		}
 
+		void setScaleVector3D(const Vector3D& scale)
+		{
+			setIdentity();
+			m_mat[0][0] = scale.m_x;
+			m_mat[1][1] = scale.m_y;
+			m_mat[2][2] = scale.m_z;
+		}
+
 		void setOrthoLH(f32 width, f32 height, f32 near_plane, f32 far_plane)
 		{
 			setIdentity();
