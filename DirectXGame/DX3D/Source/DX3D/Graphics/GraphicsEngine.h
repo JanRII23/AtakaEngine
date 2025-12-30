@@ -14,6 +14,7 @@ namespace dx3d
 
 		GraphicsDevice& getGraphicsDevice() noexcept;
 		void render(SwapChain& swapChain);
+		void updateTime();
 	private:
 		struct Vertex
 		{

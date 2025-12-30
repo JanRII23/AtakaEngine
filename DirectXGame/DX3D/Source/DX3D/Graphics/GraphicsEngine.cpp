@@ -77,13 +77,6 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
-	m_delta_pos += m_delta_time / 10.0f;
-	if (m_delta_pos > 1.0f) {
-		m_delta_pos = 0;
-	}
-
-	m_delta_scale += m_delta_time / 0.15f;
-
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, swapChain.getSize(), m_delta_pos, m_delta_scale);
 
@@ -94,6 +87,17 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	auto& device = *m_graphicsDevice;
 	device.executeCommandList(context);
 	swapChain.present();
+}
+
+void dx3d::GraphicsEngine::updateTime()
+{
+	m_delta_pos += m_delta_time / 10.0f;
+	if (m_delta_pos > 1.0f) {
+		m_delta_pos = 0;
+	}
+
+	m_delta_scale += m_delta_time / 0.15f;
+
 
 	m_old_delta = m_new_delta;
 	m_new_delta = ::GetTickCount64();
