@@ -26,18 +26,14 @@ VSOutput VSMain(VSInput input)
 {
     VSOutput output;
     
-    output.position = mul(float4(input.position, 1.0f), m_world);
-    output.position = mul(output.position, m_view);
-    output.position = mul(output.position, m_proj);
-       
     //WORLD SPACE
-    //output.position = mul(input.position, m_world);
-    //VIEW SPACE
-    //output.position = mul(input.position, m_view);
-    //SCREEN SPACE
-    //output.position = mul(output.position, m_proj);
+    output.position = mul(float4(input.position, 1.0f), m_world);
     
-    //output.position = lerp(float4(input.position, 1), float4(input.position1, 1), (sin(m_time / 1000.0f) + 1.0f) / 2.0f);
+    //VIEW SPACE
+    output.position = mul(output.position, m_view);
+    
+    //SCREEN SPACE
+    output.position = mul(output.position, m_proj);
     
     output.color = input.color;
     output.color1 = input.color1;

@@ -82,7 +82,7 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 		m_delta_pos = 0;
 	}
 
-	m_delta_scale += m_delta_time / 2.0f;
+	m_delta_scale += m_delta_time / 0.15f;
 
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, swapChain.getSize(), m_delta_pos, m_delta_scale);

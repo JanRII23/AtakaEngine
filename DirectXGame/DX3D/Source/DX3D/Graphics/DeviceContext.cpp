@@ -53,10 +53,14 @@ void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, const 
 {
 	constant cc;
 	//RECT rc{ 0, 0, size.width, size.height };
+	Matrix4x4 temp;
 
 	cc.m_time = ::GetTickCount64();
-	//cc.m_world.setTranslationVector3D(Vector3D::lerp(Vector3D(-2, -2, 0), Vector3D(2, 2, 0), m_delta_pos));
-	cc.m_world.setScaleVector3D(Vector3D::lerp(Vector3D(0.5, 0.5, 0), Vector3D(2, 2, 0), (sin(m_delta_scale) + 1.0f) / 2.0f));
+	cc.m_world.setScaleVector3D(Vector3D::lerp(Vector3D(0.5, 0.5, 0), Vector3D(1.0f, 1.0f, 0), (sin(m_delta_scale) + 1.0f) / 2.0f));
+	temp.setTranslationVector3D(Vector3D::lerp(Vector3D(-1.5f, -1.5f, 0), Vector3D(1.5f, 1.5, 0), m_delta_pos));
+
+	cc.m_world *= temp;
+
 	cc.m_view.setIdentity();
 
 	//NOTE: setting an override for now, but ideally needs to be tied to window size set by the user
