@@ -20,6 +20,7 @@ namespace dx3d
 		VertexBufferPtr createVertexBuffer(const VertexBufferDesc& desc);
 		VertexShaderSignaturePtr createVertexShaderSignature(const VertexShaderSignatureDesc& desc);
 		ConstantBufferPtr createConstantBuffer(const ConstantBufferDesc& desc);
+		IndexBufferPtr createIndexBuffer(const IndexBufferDesc& desc);
 
 		void executeCommandList(DeviceContext& context);
 	private:

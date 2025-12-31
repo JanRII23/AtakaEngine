@@ -3,6 +3,7 @@
 #include <DX3D/Graphics/GraphicsPipelineState.h>
 #include <DX3D/Graphics/VertexBuffer.h>
 #include <DX3D/Graphics/ConstantBuffer.h>
+#include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>
 
 dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc): GraphicsResource(gDesc)
 {
@@ -83,4 +84,9 @@ void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, const 
 	m_context->UpdateSubresource(buf, NULL, NULL, &cc, NULL, NULL);
 	m_context->VSSetConstantBuffers(0, 1, &buf);
 	m_context->PSSetConstantBuffers(0, 1, &buf);
+}
+
+void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
+{
+	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }

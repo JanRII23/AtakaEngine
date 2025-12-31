@@ -19,7 +19,6 @@ namespace dx3d
 		struct Vertex
 		{
 			Vec3 position;
-			Vec3 position1;
 			Vec4 color;
 			Vec4 color1;
 		};
@@ -29,6 +28,7 @@ namespace dx3d
 		GraphicsPipelineStatePtr m_pipeline{};
 		VertexBufferPtr m_vb{};
 		ConstantBufferPtr m_cb{};
+		IndexBufferPtr m_ib{};
 	private:
 		f32 m_old_delta;
 		f32 m_new_delta;

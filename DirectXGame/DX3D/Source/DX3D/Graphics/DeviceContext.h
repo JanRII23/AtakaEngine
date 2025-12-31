@@ -14,6 +14,7 @@ namespace dx3d
 		void setViewportSize(const Rect& size);
 		void drawTriangleList(ui32 vertexCount, ui32 startVertexLocation);
 		void setConstantBuffer(const ConstantBuffer& buffer, const Rect& size, f32 m_delta_pos, f32 m_delta_scale);
+		void setIndexBuffer(const IndexBuffer& buffer);
 	private:
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_context{};
 

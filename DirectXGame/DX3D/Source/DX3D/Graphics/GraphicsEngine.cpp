@@ -42,22 +42,41 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_pipeline = device.createGraphicsPipelineState({ *vsSig, *ps });
 
+
 	const Vertex vertexList[] =
 	{
-		{ { -0.5f, -0.5f, 0.0f }, { -0.32f, -0.11f, 0.0f }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 }},
-		{ { -0.5f, 0.5f, 0.0f }, { -0.11f, 0.78f, 0.0f }, { 0, 1, 0, 1 }, { 0, 0, 1, 1 }},
-		{ { 0.5f, 0.5f, 0.0f }, { 0.75f, -0.73f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 }},
+		//X - Y - Z
+		//FRONT FACE
+		{ { -0.5f, -0.5f, -0.5f }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 } },
+		{ { -0.5f, 0.5f, -0.5f }, { 0, 1, 0, 1 }, { 0, 0, 1, 1 } },
+		{ { 0.5f, 0.5f, -0.5f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
+		{ { 0.5f, -0.5f, -0.5f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
 
-		{ { 0.5f, 0.5f, 0.0f }, { 0.88f, 0.77f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 }},
-		{ { 0.5f, -0.5f, 0.0f }, { -0.25f, 0.43f, 0.0f}, { 1, 0, 1, 1 }, { 1, 0, 0, 1 }},
-		{ { -0.5f, -0.5f, 0.0f }, { -0.32f, -0.11f, 0.0f}, { 1, 0, 0, 1 }, { 0, 0, 1, 1 }}
+		//BACK FACE
+		{ { 0.5f, -0.5f, 0.5f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
+		{ { 0.5f, 0.5f, 0.5f }, { 1, 0, 1, 1 }, { 1, 0, 0, 1 } },
+		{ { -0.5f, 0.5f, 0.5f }, { 1, 0, 0, 1 }, { 0, 0, 1, 1 } },
+		{ { -0.5f, 0.5f, 0.5f }, { 1, 0, 0, 1 }, { 0, 0, 1, 1 } }
 	};
+
+	//const Vertex vertexList[] = //renders out a square
+	//{
+	//	{ { -0.5f, -0.5f, 0.0f }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 }},
+	//	{ { -0.5f, 0.5f, 0.0f }, { 0, 1, 0, 1 }, { 0, 0, 1, 1 }},
+	//	{ { 0.5f, 0.5f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 }},
+
+	//	{ { 0.5f, 0.5f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 }},
+	//	{ { 0.5f, -0.5f, 0.0f }, { 1, 0, 1, 1 }, { 1, 0, 0, 1 }},
+	//	{ { -0.5f, -0.5f, 0.0f }, { 1, 0, 0, 1 }, { 0, 0, 1, 1 }}
+	//};
 
 	constant cc;
 	cc.m_time = 0;
 	m_cb = device.createConstantBuffer({ &cc, sizeof(constant) });
 
 	m_vb = device.createVertexBuffer({vertexList, std::size(vertexList), sizeof(Vertex)});
+
+	//m_ib = device.createIndexBuffer();
 }
 
 dx3d::GraphicsEngine::~GraphicsEngine()
