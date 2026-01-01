@@ -3,6 +3,7 @@
 #include <DX3D/Core/Base.h>
 #include <DX3D/Math/Vec3.h>
 #include <DX3D/Math/Vec4.h>
+#include <Windows.h>
 
 namespace dx3d
 {
@@ -14,17 +15,27 @@ namespace dx3d
 
 		GraphicsDevice& getGraphicsDevice() noexcept;
 		void render(SwapChain& swapChain);
+		void updateTime();
 	private:
 		struct Vertex
 		{
 			Vec3 position;
 			Vec4 color;
+			Vec4 color1;
 		};
 	private:
 		std::shared_ptr<GraphicsDevice> m_graphicsDevice{};
 		DeviceContextPtr m_deviceContext{};
 		GraphicsPipelineStatePtr m_pipeline{};
 		VertexBufferPtr m_vb{};
+		ConstantBufferPtr m_cb{};
+		IndexBufferPtr m_ib{};
+	private:
+		ULONGLONG m_old_delta = 0;
+		ULONGLONG m_new_delta = 0;
+		f32 m_delta_time = 0.0f;
+		f32 m_delta_pos = 0.0f;
+		f32 m_delta_scale = 0.0f;
 	};
 }
 

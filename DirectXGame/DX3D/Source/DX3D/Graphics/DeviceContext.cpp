@@ -2,6 +2,8 @@
 #include <DX3D/Graphics/SwapChain.h>
 #include <DX3D/Graphics/GraphicsPipelineState.h>
 #include <DX3D/Graphics/VertexBuffer.h>
+#include <DX3D/Graphics/ConstantBuffer.h>
+#include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>
 
 dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc): GraphicsResource(gDesc)
 {
@@ -47,3 +49,69 @@ void dx3d::DeviceContext::drawTriangleList(ui32 vertexCount, ui32 startVertexLoc
 	m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_context->Draw(vertexCount, startVertexLocation);
 }
+
+void dx3d::DeviceContext::drawIndexedTriangleList(ui32 index_count, ui32 start_vertex_index, ui32 start_index_location)
+{
+	m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_context->DrawIndexed(index_count, start_index_location, start_vertex_index);
+}
+
+void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, constant cc)
+{
+	auto buf = buffer.m_buffer.Get();
+
+	m_context->UpdateSubresource(buf, NULL, NULL, &cc, NULL, NULL);
+	m_context->VSSetConstantBuffers(0, 1, &buf);
+	m_context->PSSetConstantBuffers(0, 1, &buf);
+}
+
+void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
+{
+	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+}
+
+dx3d::constant dx3d::DeviceContext::updateQuadPosition(const Rect& size, f32 m_delta_pos, f32 m_delta_scale) const noexcept
+{
+	constant cc;
+	//RECT rc{ 0, 0, size.width, size.height };
+	Matrix4x4 temp;
+
+	cc.m_time = ::GetTickCount64();
+	//cc.m_world.setScaleVector3D(Vector3D::lerp(Vector3D(0.5, 0.5, 0), Vector3D(1.0f, 1.0f, 0), (sin(m_delta_scale) + 1.0f) / 2.0f));
+	//temp.setTranslationVector3D(Vector3D::lerp(Vector3D(-1.5f, -1.5f, 0), Vector3D(1.5f, 1.5, 0), m_delta_pos));
+
+	//cc.m_world *= temp;
+
+	cc.m_world.setIdentity();
+	cc.m_world.setScaleVector3D(Vector3D(1, 1, 1));
+
+	temp.setRotationZ(m_delta_scale);
+	cc.m_world *= temp;
+
+	temp.setRotationY(m_delta_scale);
+	cc.m_world *= temp;
+
+	temp.setRotationX(m_delta_scale);
+	cc.m_world *= temp;
+
+	cc.m_view.setIdentity();
+
+	//NOTE: setting an override for now, but ideally needs to be tied to window size set by the user
+	cc.m_proj.setOrthoLH(
+		2.0f,
+		2.0f,
+		-4.0f,
+		4.0f
+	);
+
+	//cc.m_proj.setOrthoLH(
+	//	((rc.right - rc.left) / 10.0f) + std::abs(widthExtra),
+	//	((rc.bottom - rc.top) / 10.0f) + std::abs(heightExtra),
+	//	-4.0f,
+	//	4.0f
+	//);
+
+	return cc;
+}
+
+

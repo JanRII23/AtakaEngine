@@ -2,6 +2,8 @@
 #include <DX3D/Core/Core.h>
 #include <DX3D/Core/Logger.h>
 #include <DX3D/Math/Rect.h>
+#include <DX3D/Math/Matrix4x4.h>
+#include <Windows.h>
 
 namespace dx3d
 {
@@ -77,9 +79,30 @@ namespace dx3d
 		ui32 vertexSize{};
 	};
 
+	struct ConstantBufferDesc
+	{
+		const void* buffer{};
+		ui32 size_buffer;
+	};
+
+	struct IndexBufferDesc
+	{
+		const void* list_indices{};
+		ui32 size_list{};
+	};
+
 	struct GameDesc
 	{
 		Rect windowSize{ 1280, 720 };
 		Logger::LogLevel logLevel = Logger::LogLevel::Error;
+	};
+
+	_declspec(align(16))
+	struct constant
+	{
+		Matrix4x4 m_world;
+		Matrix4x4 m_view;
+		Matrix4x4 m_proj;
+		ULONGLONG m_time = 0;
 	};
 }
