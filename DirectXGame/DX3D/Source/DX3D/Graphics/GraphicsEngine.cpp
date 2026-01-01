@@ -112,8 +112,10 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
+	auto cc = context.updateQuadPosition(swapChain.getSize(), m_delta_pos, m_delta_scale);
+
 	auto& cb = *m_cb;
-	context.setConstantBuffer(cb, swapChain.getSize(), m_delta_pos, m_delta_scale);
+	context.setConstantBuffer(cb, cc);
 
 	auto& vb = *m_vb;
 	context.setVertexBuffer(vb);

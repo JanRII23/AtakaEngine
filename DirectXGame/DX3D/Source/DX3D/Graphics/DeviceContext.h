@@ -1,6 +1,7 @@
 #pragma once
 #include <DX3D/Graphics/GraphicsResource.h>
 #include <DX3D/Math/Vec4.h>
+#include <DX3D/Core/Common.h>
 
 namespace dx3d
 {
@@ -14,8 +15,9 @@ namespace dx3d
 		void setViewportSize(const Rect& size);
 		void drawTriangleList(ui32 vertexCount, ui32 startVertexLocation);
 		void drawIndexedTriangleList(ui32 index_count, ui32 start_vertex_index, ui32 start_index_location);
-		void setConstantBuffer(const ConstantBuffer& buffer, const Rect& size, f32 m_delta_pos, f32 m_delta_scale);
+		void setConstantBuffer(const ConstantBuffer& buffer, constant cc);
 		void setIndexBuffer(const IndexBuffer& buffer);
+		constant updateQuadPosition(const Rect& size, f32 m_delta_pos, f32 m_delta_scale) const noexcept;
 	private:
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_context{};
 

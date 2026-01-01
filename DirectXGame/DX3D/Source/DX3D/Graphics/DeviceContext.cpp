@@ -56,11 +56,22 @@ void dx3d::DeviceContext::drawIndexedTriangleList(ui32 index_count, ui32 start_v
 	m_context->DrawIndexed(index_count, start_index_location, start_vertex_index);
 }
 
-void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, const Rect& size, f32 m_delta_pos, f32 m_delta_scale)
+void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, constant cc)
 {
+	auto buf = buffer.m_buffer.Get();
 
-	//TODO: need to migrate out some of the logic here 
+	m_context->UpdateSubresource(buf, NULL, NULL, &cc, NULL, NULL);
+	m_context->VSSetConstantBuffers(0, 1, &buf);
+	m_context->PSSetConstantBuffers(0, 1, &buf);
+}
 
+void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
+{
+	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+}
+
+dx3d::constant dx3d::DeviceContext::updateQuadPosition(const Rect& size, f32 m_delta_pos, f32 m_delta_scale) const noexcept
+{
 	constant cc;
 	//RECT rc{ 0, 0, size.width, size.height };
 	Matrix4x4 temp;
@@ -74,28 +85,25 @@ void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, const 
 	cc.m_world.setIdentity();
 	cc.m_world.setScaleVector3D(Vector3D(1, 1, 1));
 
-	temp.setIdentity();
+	temp.setRotationZ(m_delta_scale);
+	cc.m_world *= temp;
+
 	temp.setRotationY(m_delta_scale);
 	cc.m_world *= temp;
 
-	temp.setIdentity();
 	temp.setRotationX(m_delta_scale);
-	cc.m_world *= temp;
-
-	temp.setIdentity();
-	temp.setRotationZ(m_delta_scale);
 	cc.m_world *= temp;
 
 	cc.m_view.setIdentity();
 
 	//NOTE: setting an override for now, but ideally needs to be tied to window size set by the user
 	cc.m_proj.setOrthoLH(
-		200.0f / 100.0f,
-		100.0f,
+		2.0f,
+		2.0f,
 		-4.0f,
 		4.0f
 	);
-	
+
 	//cc.m_proj.setOrthoLH(
 	//	((rc.right - rc.left) / 10.0f) + std::abs(widthExtra),
 	//	((rc.bottom - rc.top) / 10.0f) + std::abs(heightExtra),
@@ -103,14 +111,7 @@ void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, const 
 	//	4.0f
 	//);
 
-	auto buf = buffer.m_buffer.Get();
-
-	m_context->UpdateSubresource(buf, NULL, NULL, &cc, NULL, NULL);
-	m_context->VSSetConstantBuffers(0, 1, &buf);
-	m_context->PSSetConstantBuffers(0, 1, &buf);
+	return cc;
 }
 
-void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
-{
-	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-}
+

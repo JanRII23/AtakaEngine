@@ -42,6 +42,7 @@ namespace dx3d
 
 		void setRotationX(f32 x)
 		{
+			setIdentity();
 			m_mat[1][1] = std::cosf(x);
 			m_mat[1][2] = std::sinf(x);
 			m_mat[2][1] = -std::sinf(x);
@@ -50,6 +51,7 @@ namespace dx3d
 
 		void setRotationY(f32 y)
 		{
+			setIdentity();
 			m_mat[0][0] = std::cosf(y);
 			m_mat[0][2] = -std::sinf(y);
 			m_mat[2][0] = std::sinf(y);
@@ -58,6 +60,7 @@ namespace dx3d
 
 		void setRotationZ(f32 z)
 		{
+			setIdentity();
 			m_mat[0][0] = std::cosf(z);
 			m_mat[0][1] = std::sinf(z);
 			m_mat[1][0] = -std::sinf(z);
@@ -68,8 +71,8 @@ namespace dx3d
 		{
 			setIdentity();
 			m_mat[0][0] = 2.0f / width;
-			m_mat[3][1] = 2.0f / height;
-			m_mat[3][2] = 1.0f / (far_plane - near_plane);
+			m_mat[1][1] = 2.0f / height;
+			m_mat[2][2] = 1.0f / (far_plane - near_plane);
 			m_mat[3][2] = -(near_plane / (far_plane - near_plane));
 		}
 
