@@ -4,12 +4,13 @@
 #include <DX3D/Graphics/SwapChain.h>
 #include <DX3D/Graphics/VertexBuffer.h>
 #include <DX3D/Graphics/ConstantBuffer.h>
+#include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>
 #include <DX3D/Math/Vec3.h>
 #include <fstream>
 
 using namespace dx3d;
 
-dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.base)
+dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.base), m_old_delta(0), m_new_delta(0), m_delta_time(0.0f), m_delta_pos(0.0f), m_delta_scale(0.0f)
 {
 	/*SwapChainPtr sc{};
 
@@ -45,38 +46,53 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	const Vertex vertexList[] =
 	{
-		//X - Y - Z
-		//FRONT FACE
-		{ { -0.5f, -0.5f, -0.5f }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 } },
-		{ { -0.5f, 0.5f, -0.5f }, { 0, 1, 0, 1 }, { 0, 0, 1, 1 } },
-		{ { 0.5f, 0.5f, -0.5f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
-		{ { 0.5f, -0.5f, -0.5f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
+		//FRONT
+		{ {-0.5f, -0.5f, -0.5f}, {1,0,0,1}, {0,1,0,1} }, // 0 front-bottom-left
+		{ {-0.5f,  0.5f, -0.5f}, {0,1,0,1}, {0,0,1,1} }, // 1 front-top-left
+		{ { 0.5f,  0.5f, -0.5f}, {0,0,1,1}, {1,0,0,1} }, // 2 front-top-right
+		{ { 0.5f, -0.5f, -0.5f}, {0,0,1,1}, {1,0,0,1} }, // 3 front-bottom-right
 
-		//BACK FACE
-		{ { 0.5f, -0.5f, 0.5f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
-		{ { 0.5f, 0.5f, 0.5f }, { 1, 0, 1, 1 }, { 1, 0, 0, 1 } },
-		{ { -0.5f, 0.5f, 0.5f }, { 1, 0, 0, 1 }, { 0, 0, 1, 1 } },
-		{ { -0.5f, 0.5f, 0.5f }, { 1, 0, 0, 1 }, { 0, 0, 1, 1 } }
+		//BACK
+		{ {-0.5f, -0.5f,  0.5f}, {1,0,0,1}, {0,1,0,1} }, // 4 back-bottom-left
+		{ {-0.5f,  0.5f,  0.5f}, {0,1,0,1}, {0,0,1,1} }, // 5 back-top-left
+		{ { 0.5f,  0.5f,  0.5f}, {0,0,1,1}, {1,0,0,1} }, // 6 back-top-right
+		{ { 0.5f, -0.5f,  0.5f}, {0,0,1,1}, {1,0,0,1} }  // 7 back-bottom-right
 	};
 
-	//const Vertex vertexList[] = //renders out a square
-	//{
-	//	{ { -0.5f, -0.5f, 0.0f }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 }},
-	//	{ { -0.5f, 0.5f, 0.0f }, { 0, 1, 0, 1 }, { 0, 0, 1, 1 }},
-	//	{ { 0.5f, 0.5f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 }},
+	/*const Vertex vertexList[] =
+	{
+		{ { -0.5f, -0.5f, 0.0f }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 } },
+		{ { -0.5f, 0.5f, 0.0f }, { 0, 1, 0, 1 }, { 0, 0, 1, 1 } },
+		{ { 0.5f, 0.5f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
 
-	//	{ { 0.5f, 0.5f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 }},
-	//	{ { 0.5f, -0.5f, 0.0f }, { 1, 0, 1, 1 }, { 1, 0, 0, 1 }},
-	//	{ { -0.5f, -0.5f, 0.0f }, { 1, 0, 0, 1 }, { 0, 0, 1, 1 }}
-	//};
-
+		{ { 0.5f, 0.5f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
+		{ { 0.5f, -0.5f, 0.0f }, { 1, 0, 1, 1 }, { 1, 0, 0, 1 } },
+		{ { -0.5f, -0.5f, 0.0f }, { 1, 0, 0, 1 }, { 0, 0, 1, 1 } }
+	};*/
+	
 	constant cc;
 	cc.m_time = 0;
 	m_cb = device.createConstantBuffer({ &cc, sizeof(constant) });
 
 	m_vb = device.createVertexBuffer({vertexList, std::size(vertexList), sizeof(Vertex)});
 
-	//m_ib = device.createIndexBuffer();
+	i32 index_list[] =
+	{
+		// FRONT
+		0,1,2, 2,3,0,
+		// BACK
+		7,6,5, 5,4,7,
+		// TOP
+		1,5,6, 6,2,1,
+		// BOTTOM
+		0,3,7, 7,4,0,
+		// RIGHT
+		3,2,6, 6,7,3,
+		// LEFT
+		0,4,5, 5,1,0
+	};
+
+	m_ib = device.createIndexBuffer({ index_list , std::size(index_list)});
 }
 
 dx3d::GraphicsEngine::~GraphicsEngine()
@@ -101,7 +117,12 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 
 	auto& vb = *m_vb;
 	context.setVertexBuffer(vb);
-	context.drawTriangleList(vb.getVertexListSize(), 0u);
+
+	auto& mb = *m_ib;
+	context.setIndexBuffer(mb);
+
+	//context.drawTriangleList(vb.getVertexListSize(), 0u); -> DRAWS A TRIANGLE
+	context.drawIndexedTriangleList(mb.getSizeIndexList(), 0u, 0u);
 
 	auto& device = *m_graphicsDevice;
 	device.executeCommandList(context);
@@ -115,7 +136,7 @@ void dx3d::GraphicsEngine::updateTime()
 		m_delta_pos = 0;
 	}
 
-	m_delta_scale += m_delta_time / 0.15f;
+	m_delta_scale += m_delta_time / 0.55f;
 
 
 	m_old_delta = m_new_delta;

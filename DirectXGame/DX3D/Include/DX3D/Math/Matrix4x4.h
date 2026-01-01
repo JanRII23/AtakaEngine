@@ -3,6 +3,7 @@
 #include <memory>
 #include <DX3D/Math/Vector3D.h>
 #include <DX3D/Math/Vec3.h>
+#include <cmath>
 
 
 namespace dx3d
@@ -37,6 +38,30 @@ namespace dx3d
 			m_mat[0][0] = scale.m_x;
 			m_mat[1][1] = scale.m_y;
 			m_mat[2][2] = scale.m_z;
+		}
+
+		void setRotationX(f32 x)
+		{
+			m_mat[1][1] = std::cosf(x);
+			m_mat[1][2] = std::sinf(x);
+			m_mat[2][1] = -std::sinf(x);
+			m_mat[2][2] = std::cosf(x);
+		}
+
+		void setRotationY(f32 y)
+		{
+			m_mat[0][0] = std::cosf(y);
+			m_mat[0][2] = -std::sinf(y);
+			m_mat[2][0] = std::sinf(y);
+			m_mat[2][2] = std::cosf(y);
+		}
+
+		void setRotationZ(f32 z)
+		{
+			m_mat[0][0] = std::cosf(z);
+			m_mat[0][1] = std::sinf(z);
+			m_mat[1][0] = -std::sinf(z);
+			m_mat[1][1] = std::cosf(z);
 		}
 
 		void setOrthoLH(f32 width, f32 height, f32 near_plane, f32 far_plane)

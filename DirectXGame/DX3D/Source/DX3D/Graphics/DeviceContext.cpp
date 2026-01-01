@@ -50,16 +50,40 @@ void dx3d::DeviceContext::drawTriangleList(ui32 vertexCount, ui32 startVertexLoc
 	m_context->Draw(vertexCount, startVertexLocation);
 }
 
+void dx3d::DeviceContext::drawIndexedTriangleList(ui32 index_count, ui32 start_vertex_index, ui32 start_index_location)
+{
+	m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_context->DrawIndexed(index_count, start_index_location, start_vertex_index);
+}
+
 void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, const Rect& size, f32 m_delta_pos, f32 m_delta_scale)
 {
+
+	//TODO: need to migrate out some of the logic here 
+
 	constant cc;
 	//RECT rc{ 0, 0, size.width, size.height };
 	Matrix4x4 temp;
 
 	cc.m_time = ::GetTickCount64();
-	cc.m_world.setScaleVector3D(Vector3D::lerp(Vector3D(0.5, 0.5, 0), Vector3D(1.0f, 1.0f, 0), (sin(m_delta_scale) + 1.0f) / 2.0f));
-	temp.setTranslationVector3D(Vector3D::lerp(Vector3D(-1.5f, -1.5f, 0), Vector3D(1.5f, 1.5, 0), m_delta_pos));
+	//cc.m_world.setScaleVector3D(Vector3D::lerp(Vector3D(0.5, 0.5, 0), Vector3D(1.0f, 1.0f, 0), (sin(m_delta_scale) + 1.0f) / 2.0f));
+	//temp.setTranslationVector3D(Vector3D::lerp(Vector3D(-1.5f, -1.5f, 0), Vector3D(1.5f, 1.5, 0), m_delta_pos));
 
+	//cc.m_world *= temp;
+
+	cc.m_world.setIdentity();
+	cc.m_world.setScaleVector3D(Vector3D(1, 1, 1));
+
+	temp.setIdentity();
+	temp.setRotationY(m_delta_scale);
+	cc.m_world *= temp;
+
+	temp.setIdentity();
+	temp.setRotationX(m_delta_scale);
+	cc.m_world *= temp;
+
+	temp.setIdentity();
+	temp.setRotationZ(m_delta_scale);
 	cc.m_world *= temp;
 
 	cc.m_view.setIdentity();

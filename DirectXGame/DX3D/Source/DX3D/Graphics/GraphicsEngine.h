@@ -3,6 +3,7 @@
 #include <DX3D/Core/Base.h>
 #include <DX3D/Math/Vec3.h>
 #include <DX3D/Math/Vec4.h>
+#include <Windows.h>
 
 namespace dx3d
 {
@@ -30,11 +31,11 @@ namespace dx3d
 		ConstantBufferPtr m_cb{};
 		IndexBufferPtr m_ib{};
 	private:
-		f32 m_old_delta;
-		f32 m_new_delta;
-		f32 m_delta_time;
-		f32 m_delta_pos;
-		f32 m_delta_scale;
+		ULONGLONG m_old_delta = 0;
+		ULONGLONG m_new_delta = 0;
+		f32 m_delta_time = 0.0f;
+		f32 m_delta_pos = 0.0f;
+		f32 m_delta_scale = 0.0f;
 	};
 }
 

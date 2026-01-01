@@ -3,6 +3,7 @@
 #include <DX3D/Core/Logger.h>
 #include <DX3D/Math/Rect.h>
 #include <DX3D/Math/Matrix4x4.h>
+#include <Windows.h>
 
 namespace dx3d
 {
@@ -86,7 +87,7 @@ namespace dx3d
 
 	struct IndexBufferDesc
 	{
-		const void* list_indices;
+		const void* list_indices{};
 		ui32 size_list{};
 	};
 
@@ -102,6 +103,6 @@ namespace dx3d
 		Matrix4x4 m_world;
 		Matrix4x4 m_view;
 		Matrix4x4 m_proj;
-		unsigned int m_time;
+		ULONGLONG m_time = 0;
 	};
 }
