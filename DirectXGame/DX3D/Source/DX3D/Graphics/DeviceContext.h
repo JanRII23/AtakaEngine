@@ -17,7 +17,7 @@ namespace dx3d
 		void drawIndexedTriangleList(ui32 index_count, ui32 start_vertex_index, ui32 start_index_location);
 		void setConstantBuffer(const ConstantBuffer& buffer, constant cc);
 		void setIndexBuffer(const IndexBuffer& buffer);
-		constant updateQuadPosition(const Rect& size, f32 m_delta_pos, f32 m_delta_scale) const noexcept;
+		constant updateQuadPosition(QuadPositionAttr attr) const noexcept;
 	private:
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_context{};
 

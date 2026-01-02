@@ -91,6 +91,15 @@ namespace dx3d
 		ui32 size_list{};
 	};
 
+	struct QuadPositionAttr
+	{
+		const Rect& size;
+		f32 m_delta_pos;
+		f32 m_delta_scale;
+		f32 m_rot_x;
+		f32 m_rot_y;
+	};
+
 	struct GameDesc
 	{
 		Rect windowSize{ 1280, 720 };

@@ -4,10 +4,11 @@
 #include <DX3D/Math/Vec3.h>
 #include <DX3D/Math/Vec4.h>
 #include <Windows.h>
+#include <DX3D/Core/InputListener.h>
 
 namespace dx3d
 {
-	class GraphicsEngine final: public Base
+	class GraphicsEngine final: public Base, public InputListener
 	{
 	public:
 		explicit GraphicsEngine(const GraphicsEngineDesc& desc);
@@ -16,6 +17,9 @@ namespace dx3d
 		GraphicsDevice& getGraphicsDevice() noexcept;
 		void render(SwapChain& swapChain);
 		void updateTime();
+		//NOTE: Inherited via InputListener
+		void onKeyDown(int key) override;
+		void onKeyUp(int key) override;
 	private:
 		struct Vertex
 		{
@@ -36,6 +40,9 @@ namespace dx3d
 		f32 m_delta_time = 0.0f;
 		f32 m_delta_pos = 0.0f;
 		f32 m_delta_scale = 0.0f;
+
+		f32 m_rot_x = 0.0f;
+		f32 m_rot_y = 0.0f;
 	};
 }
 
