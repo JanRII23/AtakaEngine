@@ -5,10 +5,11 @@
 #include <DX3D/Math/Vec4.h>
 #include <Windows.h>
 #include <DX3D/Core/InputListener.h>
+#include <DX3D/Core/IFocusListener.h>
 
 namespace dx3d
 {
-	class GraphicsEngine final: public Base, public InputListener
+	class GraphicsEngine final: public Base, public InputListener, public IFocusListener
 	{
 	public:
 		explicit GraphicsEngine(const GraphicsEngineDesc& desc);
@@ -17,9 +18,13 @@ namespace dx3d
 		GraphicsDevice& getGraphicsDevice() noexcept;
 		void render(SwapChain& swapChain);
 		void updateTime();
+		void onFocus() override;
+		void onKillFocus() override;
+
 		//NOTE: Inherited via InputListener
 		void onKeyDown(int key) override;
 		void onKeyUp(int key) override;
+		void onMouseMove(const Point& delta_mouse_pos) override;
 	private:
 		struct Vertex
 		{

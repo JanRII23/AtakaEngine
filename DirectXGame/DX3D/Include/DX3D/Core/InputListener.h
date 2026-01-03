@@ -1,4 +1,5 @@
 #pragma once
+#include <DX3D/Math/Point.h>
 
 namespace dx3d
 {
@@ -15,5 +16,16 @@ namespace dx3d
 		//NOTE: Keyboard pure virtual callback functions
 		virtual void onKeyDown(int key) = 0;
 		virtual void onKeyUp(int key) = 0;
+
+		//NOTE: Mouse pure virtual callback functions
+		virtual void onMouseMove(const Point& delta_mouse_pos) = 0;
+
+		InputListener* getInputListener() const
+		{
+			return m_listener;
+		}
+
+	private:
+		InputListener* m_listener{};
 	};
 }
