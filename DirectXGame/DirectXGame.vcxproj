@@ -153,7 +153,6 @@
     <ClCompile Include="DX3D\Source\DX3D\Graphics\VertexShaderSignature.cpp" />
     <ClCompile Include="DX3D\Source\DX3D\Graphics\IndexBuffer\IndexBuffer.cpp" />
     <ClCompile Include="DX3D\Source\DX3D\Core\InputSystem.cpp" />
-    <ClCompile Include="DX3D\Source\DX3D\Core\WindowListener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX3D\Include\DX3D\Core\IFocusListener.h" />
@@ -186,7 +185,6 @@
     <ClInclude Include="DX3D\Source\DX3D\Graphics\VertexShaderSignature.h" />
     <ClInclude Include="DX3D\Source\DX3D\Graphics\IndexBuffer\IndexBuffer.h" />
     <ClInclude Include="DX3D\Include\DX3D\Core\InputSystem.h" />
-    <ClInclude Include="DX3D\Include\DX3D\Core\WindowListener.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
