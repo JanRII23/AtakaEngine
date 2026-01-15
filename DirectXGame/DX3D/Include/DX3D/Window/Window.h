@@ -14,7 +14,7 @@ namespace dx3d
 		virtual ~Window() override;
 
 		void setHWND(HWND hwnd);
-		void setGraphicsEngine(std::unique_ptr<GraphicsEngine> engine);
+		void setGraphicsEngine(GraphicsEngine* engine);
 
 		void onFocus() override;
 		void onKillFocus() override;
@@ -23,7 +23,7 @@ namespace dx3d
 		void* m_handle{};
 		Rect m_size{};
 		HWND m_hwnd{};
-		std::unique_ptr<GraphicsEngine> m_graphicsEngine;
+		GraphicsEngine* m_graphicsEngine = nullptr;
 	};
 }
 

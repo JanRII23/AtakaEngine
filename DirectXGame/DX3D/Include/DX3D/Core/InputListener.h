@@ -20,6 +20,12 @@ namespace dx3d
 		//NOTE: Mouse pure virtual callback functions
 		virtual void onMouseMove(const Point& delta_mouse_pos) = 0;
 
+		virtual void onLeftMouseDown(const Point& mouse_pos) = 0;
+		virtual void onLeftMouseUp(const Point& mouse_pos) = 0;
+
+		virtual void onRightMouseDown(const Point& mouse_pos) = 0;
+		virtual void onRightMouseUp(const Point& mouse_pos) = 0;
+
 		InputListener* getInputListener() const
 		{
 			return m_listener;

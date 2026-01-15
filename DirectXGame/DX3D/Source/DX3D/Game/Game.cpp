@@ -11,8 +11,7 @@ dx3d::Game::Game(const GameDesc& desc) :
 	m_graphicsEngine = std::make_unique<GraphicsEngine>(GraphicsEngineDesc{m_logger});
 	m_display = std::make_unique<Display>(DisplayDesc{ {m_logger, desc.windowSize}, m_graphicsEngine->getGraphicsDevice() });
 
-	//TODO: something is not working as expected when defining a setter for the graphicsEngine like this? Maybe I can just pass the pointer??
-	m_display->setGraphicsEngine(std::move(m_graphicsEngine));
+	m_display->setGraphicsEngine(m_graphicsEngine.get());
 
 	DX3DLogInfo("Game Initialized.");
 }

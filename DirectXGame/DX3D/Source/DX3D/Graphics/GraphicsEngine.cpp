@@ -188,3 +188,24 @@ void dx3d::GraphicsEngine::onMouseMove(const Point& delta_mouse_pos)
 	m_rot_x -= delta_mouse_pos.m_y * m_delta_time;
 	m_rot_y -= delta_mouse_pos.m_x * m_delta_time;
 }
+
+void dx3d::GraphicsEngine::onLeftMouseDown(const Point& mouse_pos)
+{
+	//TODO: seems to not work as expected??
+	m_scale_cube = 0.5f;
+}
+
+void dx3d::GraphicsEngine::onLeftMouseUp(const Point& mouse_pos)
+{
+	m_scale_cube = 1.0f;
+}
+
+void dx3d::GraphicsEngine::onRightMouseDown(const Point& mouse_pos)
+{
+	m_scale_cube = 2.0f;
+}
+
+void dx3d::GraphicsEngine::onRightMouseUp(const Point& mouse_pos)
+{
+	m_scale_cube = 1.0f;
+}

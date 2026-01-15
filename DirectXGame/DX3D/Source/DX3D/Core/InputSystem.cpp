@@ -46,7 +46,22 @@ void dx3d::InputSystem::update()
 
                 while (it != m_map_listeners.end())
                 {
-                    it->second->onKeyDown(i);
+                    if (i == VK_LBUTTON)
+                    {
+                        if (m_keys_state[i] != m_old_keys_state[i]) {
+                            it->second->onLeftMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
+                        }
+                    }
+                    else if (i == VK_RBUTTON)
+                    {
+                        if (m_keys_state[i] != m_old_keys_state[i]) {
+                            it->second->onRightMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
+                        }
+                    }
+                    else 
+                    {
+                        it->second->onKeyDown(i);
+                    }
                     ++it;
                 }
             }
@@ -59,7 +74,15 @@ void dx3d::InputSystem::update()
 
                     while (it != m_map_listeners.end())
                     {
-                        it->second->onKeyUp(i);
+                        if (i == VK_LBUTTON) {
+                            it->second->onLeftMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
+                        }
+                        else if (i == VK_RBUTTON) {
+                            it->second->onRightMouseUp(Point(current_mouse_pos.x, current_mouse_pos.y));
+                        }
+                        else {
+                            it->second->onKeyUp(i);
+                        } 
                         ++it;
                     }
                 }

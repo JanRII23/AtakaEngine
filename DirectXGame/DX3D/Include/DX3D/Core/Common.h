@@ -98,6 +98,7 @@ namespace dx3d
 		f32 m_delta_scale;
 		f32 m_rot_x;
 		f32 m_rot_y;
+		f32 m_scale_cube;
 	};
 
 	struct GameDesc

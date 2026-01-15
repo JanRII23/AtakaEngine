@@ -83,6 +83,9 @@ dx3d::constant dx3d::DeviceContext::updateQuadPosition(QuadPositionAttr attr) co
 	//cc.m_world *= temp;
 
 	cc.m_world.setIdentity();
+	//TODO: there is an issue with this m_scale_cube NOT init
+	cc.m_world.setScaleVector3D(Vector3D(attr.m_scale_cube, attr.m_scale_cube, attr.m_scale_cube));
+
 	cc.m_world.setScaleVector3D(Vector3D(1, 1, 1));
 
 	//temp.setRotationZ(attr.m_delta_scale);
