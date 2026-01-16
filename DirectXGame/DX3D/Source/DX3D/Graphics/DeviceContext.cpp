@@ -70,7 +70,7 @@ void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
 	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
-dx3d::constant dx3d::DeviceContext::updateQuadPosition(const Rect& size, f32 m_delta_pos, f32 m_delta_scale) const noexcept
+dx3d::constant dx3d::DeviceContext::updateQuadPosition(QuadPositionAttr attr) const noexcept
 {
 	constant cc;
 	//RECT rc{ 0, 0, size.width, size.height };
@@ -83,20 +83,24 @@ dx3d::constant dx3d::DeviceContext::updateQuadPosition(const Rect& size, f32 m_d
 	//cc.m_world *= temp;
 
 	cc.m_world.setIdentity();
-	cc.m_world.setScaleVector3D(Vector3D(1, 1, 1));
 
-	temp.setRotationZ(m_delta_scale);
+	cc.m_world.setScaleVector3D(Vector3D(attr.m_scale_cube, attr.m_scale_cube, attr.m_scale_cube));
+
+	//temp.setRotationZ(attr.m_delta_scale);
+	temp.setRotationZ(0.0f);
 	cc.m_world *= temp;
 
-	temp.setRotationY(m_delta_scale);
+	//temp.setRotationY(attr.m_delta_scale);
+	temp.setRotationY(attr.m_rot_y);
 	cc.m_world *= temp;
 
-	temp.setRotationX(m_delta_scale);
+	//temp.setRotationX(attr.m_delta_scale);
+	temp.setRotationX(attr.m_rot_x);
 	cc.m_world *= temp;
 
 	cc.m_view.setIdentity();
 
-	//NOTE: setting an override for now, but ideally needs to be tied to window size set by the user
+	//NOTE: setting an override for now, but ideally needs to be tied to window size set by the user (main.cpp pretty sure 1280, 720) is the window size
 	cc.m_proj.setOrthoLH(
 		2.0f,
 		2.0f,

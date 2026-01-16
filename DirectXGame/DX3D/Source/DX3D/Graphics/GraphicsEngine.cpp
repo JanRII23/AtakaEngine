@@ -7,6 +7,7 @@
 #include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>
 #include <DX3D/Math/Vec3.h>
 #include <fstream>
+#include <DX3D/Core/InputSystem.h>
 
 using namespace dx3d;
 
@@ -43,6 +44,7 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_pipeline = device.createGraphicsPipelineState({ *vsSig, *ps });
 
+	InputSystem::get()->addListener(this);
 
 	const Vertex vertexList[] =
 	{
@@ -106,13 +108,16 @@ GraphicsDevice& dx3d::GraphicsEngine::getGraphicsDevice() noexcept
 
 void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 {
+	InputSystem::get()->update();
+
 	auto& context = *m_deviceContext;
 	context.clearAndSetBackBuffer(swapChain, { 0.27f, 0.39f, 0.55f, 1.0f });
 	context.setGraphicsPipelineState(*m_pipeline);
 	
 	context.setViewportSize(swapChain.getSize());
 
-	auto cc = context.updateQuadPosition(swapChain.getSize(), m_delta_pos, m_delta_scale);
+	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube };
+	auto cc = context.updateQuadPosition(attr);
 
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);
@@ -138,11 +143,68 @@ void dx3d::GraphicsEngine::updateTime()
 		m_delta_pos = 0;
 	}
 
-	m_delta_scale += m_delta_time / 0.55f;
+	m_delta_scale += m_delta_time / 0.15f;
 
 
 	m_old_delta = m_new_delta;
 	m_new_delta = ::GetTickCount64();
 
 	m_delta_time = (m_old_delta) ? ((m_new_delta - m_old_delta) / 1000.0f) : 0;
+}
+
+void dx3d::GraphicsEngine::onFocus()
+{
+	InputSystem::get()->addListener(this);
+}
+
+void dx3d::GraphicsEngine::onKillFocus()
+{
+	InputSystem::get()->removeListener(this);
+}
+
+void dx3d::GraphicsEngine::onKeyDown(int key)
+{
+	switch (key) {
+	case ('W'): m_rot_x += 3.14f * m_delta_time; break;
+	case ('S'): m_rot_x -= 3.14f * m_delta_time; break;
+	case('A'): m_rot_y += 3.14f * m_delta_time; break;
+	case('D'): m_rot_y -= 3.14f * m_delta_time; break;
+	default: break;
+	}
+}
+
+void dx3d::GraphicsEngine::onKeyUp(int key)
+{
+	/*switch (key) {
+	case ('W'): m_rot_x += 3.14f * m_delta_time; break;
+	case ('S'): m_rot_x -= 3.14f * m_delta_time; break;
+	case('A'): m_rot_y += 3.14f * m_delta_time; break;
+	case('D'): m_rot_y -= 3.14f * m_delta_time; break;
+	}*/
+}
+
+void dx3d::GraphicsEngine::onMouseMove(const Point& delta_mouse_pos)
+{
+	m_rot_x -= delta_mouse_pos.m_y * m_delta_time;
+	m_rot_y -= delta_mouse_pos.m_x * m_delta_time;
+}
+
+void dx3d::GraphicsEngine::onLeftMouseDown(const Point& mouse_pos)
+{
+	m_scale_cube = 0.5f;
+}
+
+void dx3d::GraphicsEngine::onLeftMouseUp(const Point& mouse_pos)
+{
+	m_scale_cube = 1.0f;
+}
+
+void dx3d::GraphicsEngine::onRightMouseDown(const Point& mouse_pos)
+{
+	m_scale_cube = 2.0f;
+}
+
+void dx3d::GraphicsEngine::onRightMouseUp(const Point& mouse_pos)
+{
+	m_scale_cube = 1.0f;
 }

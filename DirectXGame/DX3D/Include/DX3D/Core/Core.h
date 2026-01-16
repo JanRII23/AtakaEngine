@@ -24,6 +24,7 @@ namespace dx3d
 	using ui32 = unsigned int;
 	using f32 = float;
 	using d64 = double;
+	using uc8 = unsigned char;
 
 	using SwapChainPtr = std::shared_ptr<SwapChain>;
 	using DeviceContextPtr = std::shared_ptr<DeviceContext>;

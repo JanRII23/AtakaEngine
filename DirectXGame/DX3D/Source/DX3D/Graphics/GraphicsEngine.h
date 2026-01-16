@@ -4,10 +4,12 @@
 #include <DX3D/Math/Vec3.h>
 #include <DX3D/Math/Vec4.h>
 #include <Windows.h>
+#include <DX3D/Core/InputListener.h>
+#include <DX3D/Core/IFocusListener.h>
 
 namespace dx3d
 {
-	class GraphicsEngine final: public Base
+	class GraphicsEngine final: public Base, public InputListener, public IFocusListener
 	{
 	public:
 		explicit GraphicsEngine(const GraphicsEngineDesc& desc);
@@ -16,6 +18,20 @@ namespace dx3d
 		GraphicsDevice& getGraphicsDevice() noexcept;
 		void render(SwapChain& swapChain);
 		void updateTime();
+		void onFocus() override;
+		void onKillFocus() override;
+
+		//NOTE: Inherited via InputListener
+		void onKeyDown(int key) override;
+		void onKeyUp(int key) override;
+		void onMouseMove(const Point& delta_mouse_pos) override;
+
+		void onLeftMouseDown(const Point& mouse_pos) override;
+		void onLeftMouseUp(const Point& mouse_pos) override;
+
+		void onRightMouseDown(const Point& mouse_pos) override;
+		void onRightMouseUp(const Point& mouse_pos) override;
+
 	private:
 		struct Vertex
 		{
@@ -36,6 +52,11 @@ namespace dx3d
 		f32 m_delta_time = 0.0f;
 		f32 m_delta_pos = 0.0f;
 		f32 m_delta_scale = 0.0f;
+
+		f32 m_rot_x = 0.0f;
+		f32 m_rot_y = 0.0f;
+
+		f32 m_scale_cube = 1;
 	};
 }
 

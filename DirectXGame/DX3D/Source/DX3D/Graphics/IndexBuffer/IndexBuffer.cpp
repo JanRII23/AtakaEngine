@@ -8,7 +8,7 @@ dx3d::IndexBuffer::IndexBuffer(const IndexBufferDesc& desc, const GraphicsResour
 	D3D11_BUFFER_DESC buff_desc = {};
 	buff_desc.Usage = D3D11_USAGE_DEFAULT;
 	buff_desc.ByteWidth = 4 * desc.size_list;
-	buff_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	buff_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	buff_desc.CPUAccessFlags = 0;
 	buff_desc.MiscFlags = 0;
 
