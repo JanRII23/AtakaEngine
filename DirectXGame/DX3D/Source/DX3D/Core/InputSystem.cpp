@@ -1,6 +1,7 @@
 #include <DX3D/Core/InputSystem.h> 
 #include <DX3D/Core/InputListener.h>
 #include <Windows.h>
+#include <unordered_set>
 
 dx3d::InputSystem::InputSystem()
 {
@@ -24,11 +25,11 @@ void dx3d::InputSystem::update()
     if (current_mouse_pos.x != m_old_mouse_pos.m_x || current_mouse_pos.y != m_old_mouse_pos.m_y)
     {
         //THERE IS MOUSE MOVE EVENT
-        std::map<InputListener*, InputListener*>::iterator it = m_map_listeners.begin();
+        std::unordered_set<InputListener*>::iterator it = m_set_listeners.begin();
 
-        while (it != m_map_listeners.end())
+        while (it != m_set_listeners.end())
         {
-            it->second->onMouseMove(Point((current_mouse_pos.x - m_old_mouse_pos.m_x), (current_mouse_pos.y - m_old_mouse_pos.m_y)));
+            (*it)->onMouseMove(Point((current_mouse_pos.x - m_old_mouse_pos.m_x), (current_mouse_pos.y - m_old_mouse_pos.m_y)));
             ++it;
         }
     }
@@ -42,25 +43,25 @@ void dx3d::InputSystem::update()
             //NOTE: KEY IS DOWN
             if (m_keys_state[i] & 0x80)
             {
-                std::map<InputListener*, InputListener*>::iterator it = m_map_listeners.begin();
+                std::unordered_set<InputListener*>::iterator it = m_set_listeners.begin();
 
-                while (it != m_map_listeners.end())
+                while (it != m_set_listeners.end())
                 {
                     if (i == VK_LBUTTON)
                     {
                         if (m_keys_state[i] != m_old_keys_state[i]) {
-                            it->second->onLeftMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
+                            (*it)->onLeftMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
                         }
                     }
                     else if (i == VK_RBUTTON)
                     {
                         if (m_keys_state[i] != m_old_keys_state[i]) {
-                            it->second->onRightMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
+                            (*it)->onRightMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
                         }
                     }
                     else 
                     {
-                        it->second->onKeyDown(i);
+                        (*it)->onKeyDown(i);
                     }
                     ++it;
                 }
@@ -70,18 +71,18 @@ void dx3d::InputSystem::update()
             {
                 if (m_keys_state[i] != m_old_keys_state[i])
                 {
-                    std::map<InputListener*, InputListener*>::iterator it = m_map_listeners.begin();
+                    std::unordered_set<InputListener*>::iterator it = m_set_listeners.begin();
 
-                    while (it != m_map_listeners.end())
+                    while (it != m_set_listeners.end())
                     {
                         if (i == VK_LBUTTON) {
-                            it->second->onLeftMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
+                            (*it)->onLeftMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
                         }
                         else if (i == VK_RBUTTON) {
-                            it->second->onRightMouseUp(Point(current_mouse_pos.x, current_mouse_pos.y));
+                            (*it)->onRightMouseUp(Point(current_mouse_pos.x, current_mouse_pos.y));
                         }
                         else {
-                            it->second->onKeyUp(i);
+                            (*it)->onKeyUp(i);
                         } 
                         ++it;
                     }
@@ -95,17 +96,16 @@ void dx3d::InputSystem::update()
 
 void dx3d::InputSystem::addListener(InputListener* listener)
 {
-    m_map_listeners.insert(std::make_pair<InputListener*, InputListener*>
-        (std::forward<InputListener*>(listener), std::forward<InputListener*>(listener)));
+    m_set_listeners.insert(listener);
 }
 
 void dx3d::InputSystem::removeListener(InputListener* listener)
 {
-    std::map<InputListener*, InputListener*>::iterator it = m_map_listeners.find(listener);
+    std::unordered_set<InputListener*>::iterator it = m_set_listeners.find(listener);
 
-    if (it != m_map_listeners.end())
+    if (it != m_set_listeners.end())
     {
-        m_map_listeners.erase(it);
+        m_set_listeners.erase(it);
     }
 }
 

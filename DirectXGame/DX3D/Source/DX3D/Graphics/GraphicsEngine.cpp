@@ -116,7 +116,7 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
-	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y };
+	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube };
 	auto cc = context.updateQuadPosition(attr);
 
 	auto& cb = *m_cb;
@@ -191,7 +191,6 @@ void dx3d::GraphicsEngine::onMouseMove(const Point& delta_mouse_pos)
 
 void dx3d::GraphicsEngine::onLeftMouseDown(const Point& mouse_pos)
 {
-	//TODO: seems to not work as expected??
 	m_scale_cube = 0.5f;
 }
 

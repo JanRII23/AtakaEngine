@@ -3,6 +3,7 @@
 #include <DX3D/Core/Common.h>
 #include <map>
 #include <DX3D/Math/Point.h>
+#include <unordered_set>
 
 namespace dx3d
 {
@@ -18,7 +19,7 @@ namespace dx3d
 
 		static InputSystem* get();
 	private:
-		std::map<InputListener*, InputListener*> m_map_listeners;
+		std::unordered_set<InputListener*> m_set_listeners;
 		uc8 m_keys_state[256] = {};
 		uc8 m_old_keys_state[256] = {};
 		Point m_old_mouse_pos;
