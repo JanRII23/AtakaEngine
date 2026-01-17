@@ -16,6 +16,8 @@ namespace dx3d
 		void update();
 		void addListener(InputListener* listener);
 		void removeListener(InputListener* listener);
+		void setCursorPosition(const Point& pos);
+		void showCursor(bool showMouse);
 
 		static InputSystem* get();
 	private:

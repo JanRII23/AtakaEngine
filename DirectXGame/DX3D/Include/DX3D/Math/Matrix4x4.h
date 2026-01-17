@@ -41,6 +41,13 @@ namespace dx3d
 			m_mat[2][2] = scale.m_z;
 		}
 
+		void setScale(const Vector3D& scale)
+		{
+			m_mat[0][0] = scale.m_x;
+			m_mat[1][1] = scale.m_y;
+			m_mat[2][2] = scale.m_z;
+		}
+
 		void setRotationX(f32 x)
 		{
 			setIdentity();
@@ -121,6 +128,39 @@ namespace dx3d
 		void setMatrix(const Matrix4x4& matrix)
 		{
 			::memcpy(m_mat, matrix.m_mat, sizeof(f32) * 16);
+		}
+
+		Vector3D getZDirection()
+		{
+			return Vector3D(m_mat[2][0], m_mat[2][1], m_mat[2][2]);
+		}
+
+		Vector3D getXDirection()
+		{
+			return Vector3D(m_mat[0][0], m_mat[0][1], m_mat[0][2]);
+		}
+
+		Vector3D getTranslation()
+		{
+			return Vector3D(m_mat[3][0], m_mat[3][1], m_mat[3][2]);
+		}
+
+		void setPerspectiveFovLH(f32 fov, f32 aspect, f32 znear, f32 zfar)
+		{
+			f32 yscale = 1.0f / tan(fov / 2.0f);
+			f32 xscale = yscale / aspect;
+			m_mat[0][0] = xscale;
+			m_mat[1][1] = yscale;
+			m_mat[2][2] = zfar / (zfar - znear);
+			m_mat[2][3] = 1.0f;
+			m_mat[3][2] = (-znear * zfar) / (zfar - znear);
+		}
+
+		void setTranslation(const Vector3D& translation)
+		{
+			m_mat[3][0] = translation.m_x;
+			m_mat[3][1] = translation.m_y;
+			m_mat[3][2] = translation.m_z;
 		}
 
 		void setOrthoLH(f32 width, f32 height, f32 near_plane, f32 far_plane)

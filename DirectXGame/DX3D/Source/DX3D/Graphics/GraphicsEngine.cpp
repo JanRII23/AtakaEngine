@@ -8,6 +8,7 @@
 #include <DX3D/Math/Vec3.h>
 #include <fstream>
 #include <DX3D/Core/InputSystem.h>
+#include <DX3D/Math/Matrix4x4.h>
 
 using namespace dx3d;
 
@@ -45,6 +46,9 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	m_pipeline = device.createGraphicsPipelineState({ *vsSig, *ps });
 
 	InputSystem::get()->addListener(this);
+	InputSystem::get()->showCursor(false);
+
+	m_world_cam.setTranslation(Vector3D(0, 0, -2));
 
 	const Vertex vertexList[] =
 	{
@@ -116,8 +120,8 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
-	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube };
-	auto cc = context.updateQuadPosition(attr);
+	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_rightward };
+	auto cc = context.update(attr, m_world_cam);
 
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);
@@ -165,16 +169,30 @@ void dx3d::GraphicsEngine::onKillFocus()
 void dx3d::GraphicsEngine::onKeyDown(int key)
 {
 	switch (key) {
-	case ('W'): m_rot_x += 3.14f * m_delta_time; break;
-	case ('S'): m_rot_x -= 3.14f * m_delta_time; break;
-	case('A'): m_rot_y += 3.14f * m_delta_time; break;
-	case('D'): m_rot_y -= 3.14f * m_delta_time; break;
+	case ('W'): 
+		//m_rot_x += 3.14f * m_delta_time; 
+		m_forward = 3.0f;
+		break;
+	case ('S'): 
+		//m_rot_x -= 3.14f * m_delta_time; 
+		m_forward = -10.0f;
+		break;
+	case('A'): 
+		//m_rot_y += 3.14f * m_delta_time; 
+		m_rightward = -1.0f;
+		break;
+	case('D'): 
+		//m_rot_y -= 3.14f * m_delta_time; 
+		m_rightward = 1.0f;
+		break;
 	default: break;
 	}
 }
 
 void dx3d::GraphicsEngine::onKeyUp(int key)
 {
+	m_forward = 0.0f;
+	m_rightward = 0.0f;
 	/*switch (key) {
 	case ('W'): m_rot_x += 3.14f * m_delta_time; break;
 	case ('S'): m_rot_x -= 3.14f * m_delta_time; break;
@@ -183,10 +201,20 @@ void dx3d::GraphicsEngine::onKeyUp(int key)
 	}*/
 }
 
-void dx3d::GraphicsEngine::onMouseMove(const Point& delta_mouse_pos)
+void dx3d::GraphicsEngine::onMouseMove(const Point& mouse_pos)
 {
-	m_rot_x -= delta_mouse_pos.m_y * m_delta_time;
-	m_rot_y -= delta_mouse_pos.m_x * m_delta_time;
+	/*m_rot_x -= delta_mouse_pos.m_y * m_delta_time * 0.1f;
+	m_rot_y -= delta_mouse_pos.m_x * m_delta_time * 0.1f;*/
+
+	int width = (2.0f);
+	int height = (2.0f);
+
+	constexpr float mouse_sensitivity = 0.0025f;
+
+	m_rot_x += (mouse_pos.m_y - (height / 2.0f)) * mouse_sensitivity;
+	m_rot_y += (mouse_pos.m_x - (width / 2.0f)) * mouse_sensitivity;
+
+	InputSystem::get()->setCursorPosition(Point(width / 2.0f, height / 2.0f));
 }
 
 void dx3d::GraphicsEngine::onLeftMouseDown(const Point& mouse_pos)

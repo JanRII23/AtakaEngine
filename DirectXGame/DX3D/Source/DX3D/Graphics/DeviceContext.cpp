@@ -4,6 +4,7 @@
 #include <DX3D/Graphics/VertexBuffer.h>
 #include <DX3D/Graphics/ConstantBuffer.h>
 #include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>
+#include <DX3D/Math/Matrix4x4.h>
 
 dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc): GraphicsResource(gDesc)
 {
@@ -70,7 +71,7 @@ void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
 	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
-dx3d::constant dx3d::DeviceContext::updateQuadPosition(QuadPositionAttr attr) const noexcept
+dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_world_cam) const noexcept
 {
 	constant cc;
 	//RECT rc{ 0, 0, size.width, size.height };
@@ -82,31 +83,59 @@ dx3d::constant dx3d::DeviceContext::updateQuadPosition(QuadPositionAttr attr) co
 
 	//cc.m_world *= temp;
 
+	// NOTE: old setup #1
+	//cc.m_world.setIdentity();
+
+	//cc.m_world.setScaleVector3D(Vector3D(attr.m_scale_cube, attr.m_scale_cube, attr.m_scale_cube));
+
+	////temp.setRotationZ(attr.m_delta_scale);
+	//temp.setRotationZ(0.0f);
+	//cc.m_world *= temp;
+
+	////temp.setRotationY(attr.m_delta_scale);
+	//temp.setRotationY(attr.m_rot_y);
+	//cc.m_world *= temp;
+
+	////temp.setRotationX(attr.m_delta_scale);
+	//temp.setRotationX(attr.m_rot_x);
+	//cc.m_world *= temp;
+	//NOTE: old setup #2
+
 	cc.m_world.setIdentity();
 
-	cc.m_world.setScaleVector3D(Vector3D(attr.m_scale_cube, attr.m_scale_cube, attr.m_scale_cube));
+	Matrix4x4 world_cam;
+	world_cam.setIdentity();
 
-	//temp.setRotationZ(attr.m_delta_scale);
-	temp.setRotationZ(0.0f);
-	cc.m_world *= temp;
-
-	//temp.setRotationY(attr.m_delta_scale);
-	temp.setRotationY(attr.m_rot_y);
-	cc.m_world *= temp;
-
-	//temp.setRotationX(attr.m_delta_scale);
+	temp.setIdentity();
 	temp.setRotationX(attr.m_rot_x);
-	cc.m_world *= temp;
+	world_cam *= temp;
 
-	cc.m_view.setIdentity();
+	temp.setIdentity();
+	temp.setRotationY(attr.m_rot_y);
+	world_cam *= temp;
+
+	Vector3D new_pos = m_world_cam.getTranslation() + world_cam.getZDirection() * (attr.m_forward * 0.3f);
+	new_pos = new_pos + world_cam.getXDirection() * (attr.m_rightward * 0.3f);
+
+	world_cam.setTranslation(new_pos);
+
+	m_world_cam = world_cam;
+
+	world_cam.inverse();
+
+	// NOTE: old setup #1
+	//cc.m_view.setIdentity();
+	//NOTE: old setup #2
+	 
+	cc.m_view = world_cam;
 
 	//NOTE: setting an override for now, but ideally needs to be tied to window size set by the user (main.cpp pretty sure 1280, 720) is the window size
-	cc.m_proj.setOrthoLH(
+	/*cc.m_proj.setOrthoLH(
 		2.0f,
 		2.0f,
 		-4.0f,
 		4.0f
-	);
+	);*/
 
 	//cc.m_proj.setOrthoLH(
 	//	((rc.right - rc.left) / 10.0f) + std::abs(widthExtra),
@@ -114,6 +143,11 @@ dx3d::constant dx3d::DeviceContext::updateQuadPosition(QuadPositionAttr attr) co
 	//	-4.0f,
 	//	4.0f
 	//);
+
+	int width = (2.0f);
+	int height = (2.0f);
+
+	cc.m_proj.setPerspectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.0f);
 
 	return cc;
 }
