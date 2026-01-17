@@ -1,7 +1,6 @@
 #pragma once
 #include <DX3D/Core/Core.h>
 
-//NOTE: might NOT need this, checkout Vec3?
 namespace dx3d
 {
 	class Vector3D
@@ -24,6 +23,9 @@ namespace dx3d
 			v.m_z = start.m_z * (1.0f - delta) + end.m_z * (delta);
 
 			return v;
+		}
+		~Vector3D()
+		{
 		}
 	public:
 		f32 m_x, m_y, m_z;

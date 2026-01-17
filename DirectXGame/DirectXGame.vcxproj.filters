@@ -161,5 +161,8 @@
     <ClInclude Include="DX3D\Include\DX3D\Core\InputSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DX3D\Include\DX3D\Math\Vector4D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
