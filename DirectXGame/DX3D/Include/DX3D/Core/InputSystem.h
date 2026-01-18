@@ -13,7 +13,7 @@ namespace dx3d
 		InputSystem();
 		~InputSystem();
 
-		void update();
+		void update(const Rect& size);
 		void addListener(InputListener* listener);
 		void removeListener(InputListener* listener);
 		void setCursorPosition(const Point& pos);

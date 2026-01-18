@@ -112,7 +112,7 @@ GraphicsDevice& dx3d::GraphicsEngine::getGraphicsDevice() noexcept
 
 void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 {
-	InputSystem::get()->update();
+	InputSystem::get()->update(swapChain.getSize());
 
 	auto& context = *m_deviceContext;
 	context.clearAndSetBackBuffer(swapChain, { 0.27f, 0.39f, 0.55f, 1.0f });
@@ -179,11 +179,11 @@ void dx3d::GraphicsEngine::onKeyDown(int key)
 		break;
 	case('A'): 
 		//m_rot_y += 3.14f * m_delta_time; 
-		m_rightward = -1.0f;
+		m_rightward = -5.0f;
 		break;
 	case('D'): 
 		//m_rot_y -= 3.14f * m_delta_time; 
-		m_rightward = 1.0f;
+		m_rightward = 5.0f;
 		break;
 	default: break;
 	}
@@ -201,18 +201,15 @@ void dx3d::GraphicsEngine::onKeyUp(int key)
 	}*/
 }
 
-void dx3d::GraphicsEngine::onMouseMove(const Point& mouse_pos)
+void dx3d::GraphicsEngine::onMouseMove(const Point& mouse_pos, const Rect& size)
 {
-	/*m_rot_x -= delta_mouse_pos.m_y * m_delta_time * 0.1f;
-	m_rot_y -= delta_mouse_pos.m_x * m_delta_time * 0.1f;*/
+	int width = size.width - size.left;
+	int height = size.height - size.top;
 
-	int width = (2.0f);
-	int height = (2.0f);
+	constexpr float mouse_sensitivity = 0.0050f;
 
-	constexpr float mouse_sensitivity = 0.0025f;
-
-	m_rot_x += (mouse_pos.m_y - (height / 2.0f)) * mouse_sensitivity;
-	m_rot_y += (mouse_pos.m_x - (width / 2.0f)) * mouse_sensitivity;
+	m_rot_x += (mouse_pos.m_y - (height / 2.0f)) * mouse_sensitivity * 0.1f;
+	m_rot_y += (mouse_pos.m_x - (width / 2.0f)) * mouse_sensitivity * 0.1f;
 
 	InputSystem::get()->setCursorPosition(Point(width / 2.0f, height / 2.0f));
 }

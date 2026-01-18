@@ -11,7 +11,7 @@ dx3d::InputSystem::~InputSystem()
 {
 }
 
-void dx3d::InputSystem::update()
+void dx3d::InputSystem::update(const Rect& size)
 {
     POINT current_mouse_pos = {};
     ::GetCursorPos(&current_mouse_pos);
@@ -29,7 +29,7 @@ void dx3d::InputSystem::update()
 
         while (it != m_set_listeners.end())
         {
-            (*it)->onMouseMove(Point((current_mouse_pos.x), (current_mouse_pos.y)));
+            (*it)->onMouseMove(Point((current_mouse_pos.x), (current_mouse_pos.y)), size);
             ++it;
         }
     }

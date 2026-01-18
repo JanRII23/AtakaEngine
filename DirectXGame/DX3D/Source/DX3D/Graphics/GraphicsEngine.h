@@ -25,7 +25,7 @@ namespace dx3d
 		//NOTE: Inherited via InputListener
 		void onKeyDown(int key) override;
 		void onKeyUp(int key) override;
-		void onMouseMove(const Point& mouse_pos) override;
+		void onMouseMove(const Point& mouse_pos, const Rect& size) override;
 
 		void onLeftMouseDown(const Point& mouse_pos) override;
 		void onLeftMouseUp(const Point& mouse_pos) override;

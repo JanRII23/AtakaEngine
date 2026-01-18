@@ -1,5 +1,6 @@
 #pragma once
 #include <DX3D/Math/Point.h>
+#include <DX3D/Math/Rect.h>
 
 namespace dx3d
 {
@@ -18,7 +19,7 @@ namespace dx3d
 		virtual void onKeyUp(int key) = 0;
 
 		//NOTE: Mouse pure virtual callback functions
-		virtual void onMouseMove(const Point& mouse_pos) = 0;
+		virtual void onMouseMove(const Point& mouse_pos, const Rect& size) = 0;
 
 		virtual void onLeftMouseDown(const Point& mouse_pos) = 0;
 		virtual void onLeftMouseUp(const Point& mouse_pos) = 0;

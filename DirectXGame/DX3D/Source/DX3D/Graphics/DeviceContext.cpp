@@ -106,16 +106,16 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 	Matrix4x4 world_cam;
 	world_cam.setIdentity();
 
-	temp.setIdentity();
+	//temp.setIdentity();
 	temp.setRotationX(attr.m_rot_x);
 	world_cam *= temp;
 
-	temp.setIdentity();
+	//temp.setIdentity();
 	temp.setRotationY(attr.m_rot_y);
 	world_cam *= temp;
 
 	Vector3D new_pos = m_world_cam.getTranslation() + world_cam.getZDirection() * (attr.m_forward * 0.3f);
-	new_pos = new_pos + world_cam.getXDirection() * (attr.m_rightward * 0.3f);
+	new_pos = new_pos + world_cam.getXDirection() * (attr.m_rightward * 0.3f); 
 
 	world_cam.setTranslation(new_pos);
 
@@ -144,8 +144,10 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 	//	4.0f
 	//);
 
-	int width = (2.0f);
-	int height = (2.0f);
+
+	//NOTE: Rect struct setup in such a way where width = right & bottom = height
+	int width = (attr.size.width - attr.size.left);
+	int height = (attr.size.height - attr.size.top);
 
 	cc.m_proj.setPerspectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.0f);
 
