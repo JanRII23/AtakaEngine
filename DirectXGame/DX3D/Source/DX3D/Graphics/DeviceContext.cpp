@@ -71,7 +71,7 @@ void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
 	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
-dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_world_cam) const noexcept
+dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_world_cam, f32 m_delta_time) const noexcept
 {
 	constant cc;
 	//RECT rc{ 0, 0, size.width, size.height };
@@ -106,16 +106,21 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 	Matrix4x4 world_cam;
 	world_cam.setIdentity();
 
-	//temp.setIdentity();
+	temp.setIdentity();
 	temp.setRotationX(attr.m_rot_x);
 	world_cam *= temp;
 
-	//temp.setIdentity();
+	temp.setIdentity();
 	temp.setRotationY(attr.m_rot_y);
 	world_cam *= temp;
 
+	
+
 	Vector3D new_pos = m_world_cam.getTranslation() + world_cam.getZDirection() * (attr.m_forward * 0.3f);
+
 	new_pos = new_pos + world_cam.getXDirection() * (attr.m_rightward * 0.3f); 
+
+
 
 	world_cam.setTranslation(new_pos);
 

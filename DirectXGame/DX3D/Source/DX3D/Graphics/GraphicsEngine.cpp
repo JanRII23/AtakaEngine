@@ -53,28 +53,17 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	const Vertex vertexList[] =
 	{
 		//FRONT
-		{ {-0.5f, -0.5f, -0.5f}, {1,0,0,1}, {0,1,0,1} }, // 0 front-bottom-left
-		{ {-0.5f,  0.5f, -0.5f}, {0,1,0,1}, {0,0,1,1} }, // 1 front-top-left
-		{ { 0.5f,  0.5f, -0.5f}, {0,0,1,1}, {1,0,0,1} }, // 2 front-top-right
-		{ { 0.5f, -0.5f, -0.5f}, {0,0,1,1}, {1,0,0,1} }, // 3 front-bottom-right
+		{ {-0.5f, -0.5f, -0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 0 front-bottom-left
+		{ {-0.5f,  0.5f, -0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 1 front-top-left
+		{ { 0.5f,  0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 2 front-top-right
+		{ { 0.5f, -0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 3 front-bottom-right
 
 		//BACK
-		{ {-0.5f, -0.5f,  0.5f}, {1,0,0,1}, {0,1,0,1} }, // 4 back-bottom-left
-		{ {-0.5f,  0.5f,  0.5f}, {0,1,0,1}, {0,0,1,1} }, // 5 back-top-left
-		{ { 0.5f,  0.5f,  0.5f}, {0,0,1,1}, {1,0,0,1} }, // 6 back-top-right
-		{ { 0.5f, -0.5f,  0.5f}, {0,0,1,1}, {1,0,0,1} }  // 7 back-bottom-right
+		{ {-0.5f, -0.5f,  0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 4 back-bottom-left
+		{ {-0.5f,  0.5f,  0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 5 back-top-left
+		{ { 0.5f,  0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 6 back-top-right
+		{ { 0.5f, -0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }  // 7 back-bottom-right
 	};
-
-	/*const Vertex vertexList[] =
-	{
-		{ { -0.5f, -0.5f, 0.0f }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 } },
-		{ { -0.5f, 0.5f, 0.0f }, { 0, 1, 0, 1 }, { 0, 0, 1, 1 } },
-		{ { 0.5f, 0.5f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
-
-		{ { 0.5f, 0.5f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
-		{ { 0.5f, -0.5f, 0.0f }, { 1, 0, 1, 1 }, { 1, 0, 0, 1 } },
-		{ { -0.5f, -0.5f, 0.0f }, { 1, 0, 0, 1 }, { 0, 0, 1, 1 } }
-	};*/
 	
 	constant cc;
 	cc.m_time = 0;
@@ -120,8 +109,10 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
+	auto test = m_world_cam;
+
 	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_rightward };
-	auto cc = context.update(attr, m_world_cam);
+	auto cc = context.update(attr, m_world_cam, m_delta_time);
 
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);
@@ -171,19 +162,19 @@ void dx3d::GraphicsEngine::onKeyDown(int key)
 	switch (key) {
 	case ('W'): 
 		//m_rot_x += 3.14f * m_delta_time; 
-		m_forward = 3.0f;
+		m_forward = 0.3f;
 		break;
 	case ('S'): 
 		//m_rot_x -= 3.14f * m_delta_time; 
-		m_forward = -10.0f;
+		m_forward = -0.3f;
 		break;
 	case('A'): 
 		//m_rot_y += 3.14f * m_delta_time; 
-		m_rightward = -5.0f;
+		m_rightward = -0.3f;
 		break;
 	case('D'): 
 		//m_rot_y -= 3.14f * m_delta_time; 
-		m_rightward = 5.0f;
+		m_rightward = 0.3f;
 		break;
 	default: break;
 	}
@@ -191,14 +182,18 @@ void dx3d::GraphicsEngine::onKeyDown(int key)
 
 void dx3d::GraphicsEngine::onKeyUp(int key)
 {
-	m_forward = 0.0f;
-	m_rightward = 0.0f;
-	/*switch (key) {
-	case ('W'): m_rot_x += 3.14f * m_delta_time; break;
-	case ('S'): m_rot_x -= 3.14f * m_delta_time; break;
-	case('A'): m_rot_y += 3.14f * m_delta_time; break;
-	case('D'): m_rot_y -= 3.14f * m_delta_time; break;
-	}*/
+	switch (key)
+	{
+	case ('W'):
+	case ('S'):
+		m_forward = 0.0f;
+		break;
+	case ('A'):
+	case ('D'):
+		m_rightward = 0.0f;
+		break;
+	default: break;
+	}
 }
 
 void dx3d::GraphicsEngine::onMouseMove(const Point& mouse_pos, const Rect& size)
