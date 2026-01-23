@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <DX3D/Core/InputListener.h>
 #include <DX3D/Core/IFocusListener.h>
+#include <DX3D/Math/Matrix4x4.h>
 
 namespace dx3d
 {
@@ -18,13 +19,14 @@ namespace dx3d
 		GraphicsDevice& getGraphicsDevice() noexcept;
 		void render(SwapChain& swapChain);
 		void updateTime();
+		void updateTargetPosition();
 		void onFocus() override;
 		void onKillFocus() override;
 
 		//NOTE: Inherited via InputListener
 		void onKeyDown(int key) override;
 		void onKeyUp(int key) override;
-		void onMouseMove(const Point& delta_mouse_pos) override;
+		void onMouseMove(const Point& mouse_pos, const Rect& size) override;
 
 		void onLeftMouseDown(const Point& mouse_pos) override;
 		void onLeftMouseUp(const Point& mouse_pos) override;
@@ -57,6 +59,12 @@ namespace dx3d
 		f32 m_rot_y = 0.0f;
 
 		f32 m_scale_cube = 1;
+		f32 m_forward = 0.0f;
+		f32 m_current_forward = 0.0f;
+		f32 m_rightward = 0.0f;
+		f32 m_current_rightward = 0.0f;
+
+		Matrix4x4 m_world_cam;
 	};
 }
 

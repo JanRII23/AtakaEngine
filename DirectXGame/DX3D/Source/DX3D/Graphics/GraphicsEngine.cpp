@@ -8,6 +8,7 @@
 #include <DX3D/Math/Vec3.h>
 #include <fstream>
 #include <DX3D/Core/InputSystem.h>
+#include <DX3D/Math/Matrix4x4.h>
 
 using namespace dx3d;
 
@@ -45,32 +46,24 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	m_pipeline = device.createGraphicsPipelineState({ *vsSig, *ps });
 
 	InputSystem::get()->addListener(this);
+	InputSystem::get()->showCursor(false);
+
+	m_world_cam.setTranslation(Vector3D(0, 0, -2));
 
 	const Vertex vertexList[] =
 	{
 		//FRONT
-		{ {-0.5f, -0.5f, -0.5f}, {1,0,0,1}, {0,1,0,1} }, // 0 front-bottom-left
-		{ {-0.5f,  0.5f, -0.5f}, {0,1,0,1}, {0,0,1,1} }, // 1 front-top-left
-		{ { 0.5f,  0.5f, -0.5f}, {0,0,1,1}, {1,0,0,1} }, // 2 front-top-right
-		{ { 0.5f, -0.5f, -0.5f}, {0,0,1,1}, {1,0,0,1} }, // 3 front-bottom-right
+		{ {-0.5f, -0.5f, -0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 0 front-bottom-left
+		{ {-0.5f,  0.5f, -0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 1 front-top-left
+		{ { 0.5f,  0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 2 front-top-right
+		{ { 0.5f, -0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 3 front-bottom-right
 
 		//BACK
-		{ {-0.5f, -0.5f,  0.5f}, {1,0,0,1}, {0,1,0,1} }, // 4 back-bottom-left
-		{ {-0.5f,  0.5f,  0.5f}, {0,1,0,1}, {0,0,1,1} }, // 5 back-top-left
-		{ { 0.5f,  0.5f,  0.5f}, {0,0,1,1}, {1,0,0,1} }, // 6 back-top-right
-		{ { 0.5f, -0.5f,  0.5f}, {0,0,1,1}, {1,0,0,1} }  // 7 back-bottom-right
+		{ {-0.5f, -0.5f,  0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 4 back-bottom-left
+		{ {-0.5f,  0.5f,  0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 5 back-top-left
+		{ { 0.5f,  0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 6 back-top-right
+		{ { 0.5f, -0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }  // 7 back-bottom-right
 	};
-
-	/*const Vertex vertexList[] =
-	{
-		{ { -0.5f, -0.5f, 0.0f }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 } },
-		{ { -0.5f, 0.5f, 0.0f }, { 0, 1, 0, 1 }, { 0, 0, 1, 1 } },
-		{ { 0.5f, 0.5f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
-
-		{ { 0.5f, 0.5f, 0.0f }, { 0, 0, 1, 1 }, { 1, 0, 0, 1 } },
-		{ { 0.5f, -0.5f, 0.0f }, { 1, 0, 1, 1 }, { 1, 0, 0, 1 } },
-		{ { -0.5f, -0.5f, 0.0f }, { 1, 0, 0, 1 }, { 0, 0, 1, 1 } }
-	};*/
 	
 	constant cc;
 	cc.m_time = 0;
@@ -108,7 +101,7 @@ GraphicsDevice& dx3d::GraphicsEngine::getGraphicsDevice() noexcept
 
 void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 {
-	InputSystem::get()->update();
+	InputSystem::get()->update(swapChain.getSize());
 
 	auto& context = *m_deviceContext;
 	context.clearAndSetBackBuffer(swapChain, { 0.27f, 0.39f, 0.55f, 1.0f });
@@ -116,8 +109,12 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
-	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube };
-	auto cc = context.updateQuadPosition(attr);
+	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward };
+
+	attr.m_current_forward = m_current_forward;
+	attr.m_current_rightward = m_current_rightward;
+
+	auto cc = context.update(attr, m_world_cam);
 
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);
@@ -152,6 +149,15 @@ void dx3d::GraphicsEngine::updateTime()
 	m_delta_time = (m_old_delta) ? ((m_new_delta - m_old_delta) / 1000.0f) : 0;
 }
 
+void dx3d::GraphicsEngine::updateTargetPosition()
+{
+	static float move_acceleration = 2.0f; // bigger = faster response
+
+	m_current_forward += (m_forward - m_current_forward) * move_acceleration * m_delta_time;
+
+	m_current_rightward += (m_rightward - m_current_rightward) * move_acceleration * m_delta_time;
+}
+
 void dx3d::GraphicsEngine::onFocus()
 {
 	InputSystem::get()->addListener(this);
@@ -165,28 +171,53 @@ void dx3d::GraphicsEngine::onKillFocus()
 void dx3d::GraphicsEngine::onKeyDown(int key)
 {
 	switch (key) {
-	case ('W'): m_rot_x += 3.14f * m_delta_time; break;
-	case ('S'): m_rot_x -= 3.14f * m_delta_time; break;
-	case('A'): m_rot_y += 3.14f * m_delta_time; break;
-	case('D'): m_rot_y -= 3.14f * m_delta_time; break;
+	case ('W'): 
+		//m_rot_x += 3.14f * m_delta_time; 
+		m_forward = 3.0f;
+		break;
+	case ('S'): 
+		//m_rot_x -= 3.14f * m_delta_time; 
+		m_forward = -20.f;
+		break;
+	case('A'): 
+		//m_rot_y += 3.14f * m_delta_time; 
+		m_rightward = 5.0f;
+		break;
+	case('D'): 
+		//m_rot_y -= 3.14f * m_delta_time; 
+		m_rightward = -5.0f;
+		break;
 	default: break;
 	}
 }
 
 void dx3d::GraphicsEngine::onKeyUp(int key)
 {
-	/*switch (key) {
-	case ('W'): m_rot_x += 3.14f * m_delta_time; break;
-	case ('S'): m_rot_x -= 3.14f * m_delta_time; break;
-	case('A'): m_rot_y += 3.14f * m_delta_time; break;
-	case('D'): m_rot_y -= 3.14f * m_delta_time; break;
-	}*/
+	switch (key)
+	{
+	case ('W'):
+	case ('S'):
+		m_forward = 0.0f;
+		break;
+	case ('A'):
+	case ('D'):
+		m_rightward = 0.0f;
+		break;
+	default: break;
+	}
 }
 
-void dx3d::GraphicsEngine::onMouseMove(const Point& delta_mouse_pos)
+void dx3d::GraphicsEngine::onMouseMove(const Point& mouse_pos, const Rect& size)
 {
-	m_rot_x -= delta_mouse_pos.m_y * m_delta_time;
-	m_rot_y -= delta_mouse_pos.m_x * m_delta_time;
+	int width = size.width - size.left;
+	int height = size.height - size.top;
+
+	constexpr float mouse_sensitivity = 0.0050f;
+
+	m_rot_x += (mouse_pos.m_y - (height / 2.0f)) * mouse_sensitivity * 0.1f;
+	m_rot_y += (mouse_pos.m_x - (width / 2.0f)) * mouse_sensitivity * 0.1f;
+
+	InputSystem::get()->setCursorPosition(Point(width / 2.0f, height / 2.0f));
 }
 
 void dx3d::GraphicsEngine::onLeftMouseDown(const Point& mouse_pos)
