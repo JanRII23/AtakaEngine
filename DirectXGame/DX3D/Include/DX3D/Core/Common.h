@@ -100,7 +100,9 @@ namespace dx3d
 		f32 m_rot_y;
 		f32 m_scale_cube;
 		f32 m_forward;
+		f32 m_current_forward;
 		f32 m_rightward;
+		f32 m_current_rightward;
 	};
 
 	struct GameDesc

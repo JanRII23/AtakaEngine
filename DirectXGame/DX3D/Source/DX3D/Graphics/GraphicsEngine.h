@@ -19,6 +19,7 @@ namespace dx3d
 		GraphicsDevice& getGraphicsDevice() noexcept;
 		void render(SwapChain& swapChain);
 		void updateTime();
+		void updateTargetPosition();
 		void onFocus() override;
 		void onKillFocus() override;
 
@@ -59,7 +60,9 @@ namespace dx3d
 
 		f32 m_scale_cube = 1;
 		f32 m_forward = 0.0f;
+		f32 m_current_forward = 0.0f;
 		f32 m_rightward = 0.0f;
+		f32 m_current_rightward = 0.0f;
 
 		Matrix4x4 m_world_cam;
 	};

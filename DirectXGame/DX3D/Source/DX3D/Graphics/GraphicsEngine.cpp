@@ -109,10 +109,12 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
-	auto test = m_world_cam;
+	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward };
 
-	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_rightward };
-	auto cc = context.update(attr, m_world_cam, m_delta_time);
+	attr.m_current_forward = m_current_forward;
+	attr.m_current_rightward = m_current_rightward;
+
+	auto cc = context.update(attr, m_world_cam);
 
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);
@@ -147,6 +149,15 @@ void dx3d::GraphicsEngine::updateTime()
 	m_delta_time = (m_old_delta) ? ((m_new_delta - m_old_delta) / 1000.0f) : 0;
 }
 
+void dx3d::GraphicsEngine::updateTargetPosition()
+{
+	static float move_acceleration = 2.0f; // bigger = faster response
+
+	m_current_forward += (m_forward - m_current_forward) * move_acceleration * m_delta_time;
+
+	m_current_rightward += (m_rightward - m_current_rightward) * move_acceleration * m_delta_time;
+}
+
 void dx3d::GraphicsEngine::onFocus()
 {
 	InputSystem::get()->addListener(this);
@@ -162,19 +173,19 @@ void dx3d::GraphicsEngine::onKeyDown(int key)
 	switch (key) {
 	case ('W'): 
 		//m_rot_x += 3.14f * m_delta_time; 
-		m_forward = 0.3f;
+		m_forward = 3.0f;
 		break;
 	case ('S'): 
 		//m_rot_x -= 3.14f * m_delta_time; 
-		m_forward = -0.3f;
+		m_forward = -20.f;
 		break;
 	case('A'): 
 		//m_rot_y += 3.14f * m_delta_time; 
-		m_rightward = -0.3f;
+		m_rightward = 5.0f;
 		break;
 	case('D'): 
 		//m_rot_y -= 3.14f * m_delta_time; 
-		m_rightward = 0.3f;
+		m_rightward = -5.0f;
 		break;
 	default: break;
 	}
