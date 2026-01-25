@@ -12,6 +12,7 @@ namespace dx3d
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_buffer{};
 		ui32 m_vertexSize{};
 		ui32 m_vertexListSize{};
+		RenderSystem* m_system = nullptr;
 
 		friend class DeviceContext;
 	};

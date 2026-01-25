@@ -1,6 +1,6 @@
 #include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>
 
-dx3d::IndexBuffer::IndexBuffer(const IndexBufferDesc& desc, const GraphicsResourceDesc& gDesc) : GraphicsResource(gDesc), m_size_list(desc.size_list)
+dx3d::IndexBuffer::IndexBuffer(const IndexBufferDesc& desc, const GraphicsResourceDesc& gDesc, RenderSystem* system) : GraphicsResource(gDesc), m_size_list(desc.size_list), m_system(system)
 {
 	if (!desc.list_indices) DX3DLogThrowInvalidArg("No list indices provided.");
 	if (!desc.size_list)  DX3DLogThrowInvalidArg("Size list indices must be non-zero");

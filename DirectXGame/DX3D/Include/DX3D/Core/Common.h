@@ -34,6 +34,11 @@ namespace dx3d
 		BaseDesc base;
 	};
 
+	struct RenderSystemDesc
+	{
+		BaseDesc base;
+	};
+
 	struct SwapChainDesc
 	{
 		void* winHandle{};
@@ -89,7 +94,7 @@ namespace dx3d
 	{
 		const void* list_indices{};
 		ui32 size_list{};
-	};
+	}; 
 
 	struct QuadPositionAttr
 	{

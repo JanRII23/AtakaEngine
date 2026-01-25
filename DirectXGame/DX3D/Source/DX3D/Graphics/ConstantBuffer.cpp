@@ -1,6 +1,6 @@
 #include <DX3D/Graphics/ConstantBuffer.h>
 
-dx3d::ConstantBuffer::ConstantBuffer(const ConstantBufferDesc& desc, const GraphicsResourceDesc& gDesc) : GraphicsResource(gDesc)
+dx3d::ConstantBuffer::ConstantBuffer(const ConstantBufferDesc& desc, const GraphicsResourceDesc& gDesc, RenderSystem* system) : GraphicsResource(gDesc), m_system(system)
 {
 	if (!desc.buffer) DX3DLogThrowInvalidArg("No buffer provided.");
 	if (!desc.size_buffer) DX3DLogThrowInvalidArg("No buffer size provided.");
@@ -14,6 +14,9 @@ dx3d::ConstantBuffer::ConstantBuffer(const ConstantBufferDesc& desc, const Graph
 
 	D3D11_SUBRESOURCE_DATA init_data = {};
 	init_data.pSysMem = desc.buffer;
+
+	//TODO: 19:06
+	//m_system->creatBu
 
 	DX3DGraphicsLogThrowOnFail(m_device.CreateBuffer(
 		&buff_desc, &init_data, &m_buffer
