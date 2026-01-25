@@ -74,7 +74,6 @@ ConstantBufferPtr dx3d::GraphicsDevice::createConstantBuffer(const ConstantBuffe
 
 IndexBufferPtr dx3d::GraphicsDevice::createIndexBuffer(const IndexBufferDesc& desc)
 {
-	//TODO: update these tho
 	return std::make_shared<IndexBuffer>(desc, getGraphicsResourceDesc());
 }
 

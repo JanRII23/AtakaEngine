@@ -4,7 +4,6 @@
 
 namespace dx3d
 {
-	//TODO: figure out the 15:45 VertexShader + PixelShader don't have these??
 	class VertexShaderSignature final: public GraphicsResource
 	{
 	public:

@@ -6,9 +6,9 @@
 #include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>
 #include <DX3D/Math/Matrix4x4.h>
 
-dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc, RenderSystem* system, const RenderResourceDesc& rDesc): GraphicsResource(gDesc), m_system(system), RenderResource(rDesc)
+dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc): GraphicsResource(gDesc)
 {
-	DX3DGraphicsLogThrowOnFail(GraphicsResource::m_device.CreateDeferredContext(0, &m_context),
+	DX3DGraphicsLogThrowOnFail(m_device.CreateDeferredContext(0, &m_context),
 		"CreateDeferredContext Failed.");
 }
 
