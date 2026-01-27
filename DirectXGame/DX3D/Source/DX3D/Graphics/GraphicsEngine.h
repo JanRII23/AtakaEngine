@@ -48,6 +48,9 @@ namespace dx3d
 		VertexBufferPtr m_vb{};
 		ConstantBufferPtr m_cb{};
 		IndexBufferPtr m_ib{};
+
+		//TODO: changes here
+
 	private:
 		ULONGLONG m_old_delta = 0;
 		ULONGLONG m_new_delta = 0;

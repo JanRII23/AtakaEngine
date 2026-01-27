@@ -66,6 +66,7 @@ VertexShaderSignaturePtr dx3d::GraphicsDevice::createVertexShaderSignature(const
 {
 	return std::make_shared<VertexShaderSignature>(desc, getGraphicsResourceDesc());
 }
+//TODO: changes here
 
 ConstantBufferPtr dx3d::GraphicsDevice::createConstantBuffer(const ConstantBufferDesc& desc)
 {

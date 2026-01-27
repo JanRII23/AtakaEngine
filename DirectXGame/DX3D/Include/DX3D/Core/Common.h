@@ -79,6 +79,8 @@ namespace dx3d
 		ui32 vertexSize{};
 	};
 
+	//TODO: maybe changes here
+
 	struct ConstantBufferDesc
 	{
 		const void* buffer{};

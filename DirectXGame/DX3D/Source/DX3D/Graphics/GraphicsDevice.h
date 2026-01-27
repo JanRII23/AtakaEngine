@@ -22,6 +22,8 @@ namespace dx3d
 		ConstantBufferPtr createConstantBuffer(const ConstantBufferDesc& desc);
 		IndexBufferPtr createIndexBuffer(const IndexBufferDesc& desc);
 
+		//TODO: changes here
+
 		void executeCommandList(DeviceContext& context);
 	private:
 		GraphicsResourceDesc getGraphicsResourceDesc() const noexcept;

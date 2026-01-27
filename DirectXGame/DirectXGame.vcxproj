@@ -153,6 +153,10 @@
     <ClCompile Include="DX3D\Source\DX3D\Graphics\VertexShaderSignature.cpp" />
     <ClCompile Include="DX3D\Source\DX3D\Graphics\IndexBuffer\IndexBuffer.cpp" />
     <ClCompile Include="DX3D\Source\DX3D\Core\InputSystem.cpp" />
+    <ClCompile Include="DX3D\Source\DX3D\Graphics\ResourceManager\ResourceManager.cpp" />
+    <ClCompile Include="DX3D\Source\DX3D\Graphics\ResourceManager\Resource.cpp" />
+    <ClCompile Include="DX3D\Source\DX3D\Graphics\ResourceManager\TextureManager\Texture.cpp" />
+    <ClCompile Include="DX3D\Source\DX3D\Graphics\ResourceManager\TextureManager\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX3D\Include\DX3D\Core\IFocusListener.h" />
@@ -186,6 +190,10 @@
     <ClInclude Include="DX3D\Source\DX3D\Graphics\VertexShaderSignature.h" />
     <ClInclude Include="DX3D\Source\DX3D\Graphics\IndexBuffer\IndexBuffer.h" />
     <ClInclude Include="DX3D\Include\DX3D\Core\InputSystem.h" />
+    <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\ResourceManager.h" />
+    <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\Resource.h" />
+    <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\TextureManager\Texture.h" />
+    <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\TextureManager\TextureManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
