@@ -21,6 +21,8 @@ namespace dx3d
 	class IndexBuffer;
 	class Resource;
 	class ResourceManager;
+	class Texture;
+	class TextureManager;
 
 	using i32 = int;
 	using ui32 = unsigned int;
