@@ -66,7 +66,6 @@ VertexShaderSignaturePtr dx3d::GraphicsDevice::createVertexShaderSignature(const
 {
 	return std::make_shared<VertexShaderSignature>(desc, getGraphicsResourceDesc());
 }
-//TODO: changes here
 
 ConstantBufferPtr dx3d::GraphicsDevice::createConstantBuffer(const ConstantBufferDesc& desc)
 {
@@ -76,6 +75,11 @@ ConstantBufferPtr dx3d::GraphicsDevice::createConstantBuffer(const ConstantBuffe
 IndexBufferPtr dx3d::GraphicsDevice::createIndexBuffer(const IndexBufferDesc& desc)
 {
 	return std::make_shared<IndexBuffer>(desc, getGraphicsResourceDesc());
+}
+
+ID3D11Device* dx3d::GraphicsDevice::getD3DDevice() const noexcept
+{
+	return m_d3dDevice.Get();
 }
 
 void dx3d::GraphicsDevice::executeCommandList(DeviceContext& context)

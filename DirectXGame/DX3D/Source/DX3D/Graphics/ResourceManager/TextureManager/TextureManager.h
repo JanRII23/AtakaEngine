@@ -1,5 +1,8 @@
 #pragma once
 #include <DX3D/Graphics/ResourceManager/ResourceManager.h>
+#include <DX3D/Core/Common.h>
+#include <DX3D/Core/Base.h>
+#include <DX3D/Graphics/ResourceManager/TextureManager/Texture.h>
 
 namespace dx3d
 {
@@ -8,7 +11,9 @@ namespace dx3d
 	public:
 		TextureManager();
 		~TextureManager();
-		virtual Resource* createResourceFromFileConcrete(const wchar_t* file_path);
+		TexturePtr createTextureFromFile(const wchar_t* file_path);
+	protected:
+		virtual Resource* createResourceFromFileConcrete(const wchar_t* file_path, GraphicsDevice& device);
 	};
 }
 

@@ -1,6 +1,9 @@
 #include <DX3D/Graphics/ResourceManager/TextureManager/TextureManager.h>
+#include <DX3D/Graphics/ResourceManager/TextureManager/Texture.h>
 
-dx3d::TextureManager::TextureManager()
+using namespace dx3d;
+
+dx3d::TextureManager::TextureManager() : ResourceManager()
 {
 }
 
@@ -8,7 +11,18 @@ dx3d::TextureManager::~TextureManager()
 {
 }
 
-dx3d::Resource* dx3d::TextureManager::createResourceFromFileConcrete(const wchar_t* file_path)
+TexturePtr dx3d::TextureManager::createTextureFromFile(const wchar_t* file_path)
 {
-	return nullptr;
+	return std::static_pointer_cast<Texture>(createResourceFromFile(file_path));
+}
+
+dx3d::Resource* dx3d::TextureManager::createResourceFromFileConcrete(const wchar_t* file_path, GraphicsDevice& device)
+{
+	Texture* tex = nullptr;
+	try {
+		tex = new Texture(file_path, device);
+	}
+	catch (...) {}
+
+	return tex;
 }

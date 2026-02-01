@@ -39,4 +39,5 @@ namespace dx3d
 	using ConstantBufferPtr = std::shared_ptr<ConstantBuffer>;
 	using IndexBufferPtr = std::shared_ptr<IndexBuffer>;
 	using ResourcePtr = std::shared_ptr<Resource>;
+	using TexturePtr = std::shared_ptr<Texture>;
 }
