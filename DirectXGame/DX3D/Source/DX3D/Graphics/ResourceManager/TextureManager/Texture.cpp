@@ -23,4 +23,5 @@ dx3d::Texture::Texture(const wchar_t* full_path, GraphicsDevice& device): Resour
 
 dx3d::Texture::~Texture()
 {
+	m_texture->Release();
 }

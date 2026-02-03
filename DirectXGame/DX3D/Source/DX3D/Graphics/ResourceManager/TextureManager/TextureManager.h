@@ -11,7 +11,7 @@ namespace dx3d
 	public:
 		TextureManager();
 		~TextureManager();
-		TexturePtr createTextureFromFile(const wchar_t* file_path);
+		TexturePtr createTextureFromFile(const wchar_t* file_path, GraphicsDevice& device);
 	protected:
 		virtual Resource* createResourceFromFileConcrete(const wchar_t* file_path, GraphicsDevice& device);
 	};

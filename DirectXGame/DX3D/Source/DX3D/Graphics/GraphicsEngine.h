@@ -7,6 +7,7 @@
 #include <DX3D/Core/InputListener.h>
 #include <DX3D/Core/IFocusListener.h>
 #include <DX3D/Math/Matrix4x4.h>
+#include <DX3D/Graphics/ResourceManager/TextureManager/TextureManager.h>
 
 namespace dx3d
 {
@@ -34,6 +35,8 @@ namespace dx3d
 		void onRightMouseDown(const Point& mouse_pos) override;
 		void onRightMouseUp(const Point& mouse_pos) override;
 
+		TextureManager* getTextureManager() noexcept;
+
 	private:
 		struct Vertex
 		{
@@ -48,6 +51,8 @@ namespace dx3d
 		VertexBufferPtr m_vb{};
 		ConstantBufferPtr m_cb{};
 		IndexBufferPtr m_ib{};
+		TextureManager * m_tex_manager = nullptr;
+
 
 	private:
 		ULONGLONG m_old_delta = 0;

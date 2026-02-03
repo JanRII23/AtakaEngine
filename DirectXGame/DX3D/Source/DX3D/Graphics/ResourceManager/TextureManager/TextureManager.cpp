@@ -11,9 +11,9 @@ dx3d::TextureManager::~TextureManager()
 {
 }
 
-TexturePtr dx3d::TextureManager::createTextureFromFile(const wchar_t* file_path)
+TexturePtr dx3d::TextureManager::createTextureFromFile(const wchar_t* file_path, GraphicsDevice& device)
 {
-	return std::static_pointer_cast<Texture>(createResourceFromFile(file_path));
+	return std::static_pointer_cast<Texture>(createResourceFromFile(file_path, device));
 }
 
 dx3d::Resource* dx3d::TextureManager::createResourceFromFileConcrete(const wchar_t* file_path, GraphicsDevice& device)

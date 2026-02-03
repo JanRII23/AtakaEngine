@@ -48,6 +48,11 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
 
+	m_tex_manager = new TextureManager();
+	if (!m_tex_manager) DX3DLogThrowError("Failed to create Texture Manager.");
+
+	TexturePtr m_wood_text = m_tex_manager->createTextureFromFile(L"Assets/Textures/wood.jpg", *m_graphicsDevice);
+
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
 
 	const Vertex vertexList[] =
@@ -238,4 +243,9 @@ void dx3d::GraphicsEngine::onRightMouseDown(const Point& mouse_pos)
 void dx3d::GraphicsEngine::onRightMouseUp(const Point& mouse_pos)
 {
 	m_scale_cube = 1.0f;
+}
+
+TextureManager* dx3d::GraphicsEngine::getTextureManager() noexcept
+{
+	return m_tex_manager;
 }

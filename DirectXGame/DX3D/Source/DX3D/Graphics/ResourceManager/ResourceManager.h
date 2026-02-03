@@ -12,10 +12,10 @@ namespace dx3d
 		ResourceManager();
 		virtual ~ResourceManager();
 
-		ResourcePtr createResourceFromFile(const wchar_t* file_path);
+		ResourcePtr createResourceFromFile(const wchar_t* file_path, GraphicsDevice& device);
 	
 	protected:
-		virtual Resource* createResourceFromFileConcrete(const wchar_t* file_path) = 0;
+		virtual Resource* createResourceFromFileConcrete(const wchar_t* file_path,  GraphicsDevice& device) = 0;
 
 	private:
 		std::unordered_map<std::wstring, ResourcePtr> m_map_resources;
