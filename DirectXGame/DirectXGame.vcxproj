@@ -164,7 +164,6 @@
     <ClInclude Include="DX3D\Include\DX3D\Core\InputListener.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Matrix4x4.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Point.h" />
-    <ClInclude Include="DX3D\Include\DX3D\Math\Vector2D.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Vector3D.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Vector4D.h" />
     <ClInclude Include="DX3D\Source\DX3D\Graphics\ConstantBuffer.h" />

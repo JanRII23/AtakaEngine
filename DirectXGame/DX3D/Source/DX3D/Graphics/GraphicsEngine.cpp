@@ -55,77 +55,19 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
 
-	Vector3D position_list[] =
-	{
-		//FRONT
-		{Vector3D( - 0.5f, -0.5f, -0.5f)},
-		{Vector3D(-0.5f,  0.5f, -0.5f)},
-		{Vector3D(0.5f,  0.5f, -0.5f)},
-		{Vector3D(0.5f, -0.5f, -0.5f)},
-
-		//BACK
-		{Vector3D(-0.5f, -0.5f,  0.5f)},
-		{Vector3D(-0.5f,  0.5f,  0.5f)},
-		{Vector3D(0.5f,  0.5f,  0.5f)},
-		{Vector3D(0.5f, -0.5f,  0.5f)}
-	};
-
-	Vector2D texcoord_list[] =
-	{
-		{ Vector2D(0.0f, 0.0f) },
-		{ Vector2D(0.0f, 1.0f) },
-		{ Vector2D(1.0f, 0.0f) },
-		{ Vector2D(1.0f, 1.0f) }
-	};
-
-	//const Vertex vertexList[] =
-	//{
-	//	//FRONT
-	//	{ {-0.5f, -0.5f, -0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 0 front-bottom-left
-	//	{ {-0.5f,  0.5f, -0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 1 front-top-left
-	//	{ { 0.5f,  0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 2 front-top-right
-	//	{ { 0.5f, -0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 3 front-bottom-right
-
-	//	//BACK
-	//	{ {-0.5f, -0.5f,  0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 4 back-bottom-left
-	//	{ {-0.5f,  0.5f,  0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 5 back-top-left
-	//	{ { 0.5f,  0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 6 back-top-right
-	//	{ { 0.5f, -0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }  // 7 back-bottom-right
-	//};
-
 	const Vertex vertexList[] =
 	{
-		// X - Y - Z
-		//FRONT FACE
-		{ position_list[0], texcoord_list[1] },
-		{ position_list[1], texcoord_list[0] },
-		{ position_list[2], texcoord_list[2] },
-		{ position_list[3], texcoord_list[3] },
+		//FRONT
+		{ {-0.5f, -0.5f, -0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 0 front-bottom-left
+		{ {-0.5f,  0.5f, -0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 1 front-top-left
+		{ { 0.5f,  0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 2 front-top-right
+		{ { 0.5f, -0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 3 front-bottom-right
 
-		{ position_list[7], texcoord_list[1] },
-		{ position_list[6], texcoord_list[0] },
-		{ position_list[5], texcoord_list[2] },
-		{ position_list[4], texcoord_list[3] },
-
-		{ position_list[1], texcoord_list[1] },
-		{ position_list[5], texcoord_list[0] },
-		{ position_list[6], texcoord_list[2] },
-		{ position_list[2], texcoord_list[3] },
-
-		{ position_list[0], texcoord_list[1] },
-		{ position_list[3], texcoord_list[0] },
-		{ position_list[7], texcoord_list[2] },
-		{ position_list[4], texcoord_list[3] },
-
-		{ position_list[3], texcoord_list[1] },
-		{ position_list[2], texcoord_list[0] },
-		{ position_list[6], texcoord_list[2] },
-		{ position_list[7], texcoord_list[3] },
-
-		{ position_list[0], texcoord_list[1] },
-		{ position_list[4], texcoord_list[0] },
-		{ position_list[5], texcoord_list[2] },
-		{ position_list[1], texcoord_list[3] }
+		//BACK
+		{ {-0.5f, -0.5f,  0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 4 back-bottom-left
+		{ {-0.5f,  0.5f,  0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 5 back-top-left
+		{ { 0.5f,  0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 6 back-top-right
+		{ { 0.5f, -0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }  // 7 back-bottom-right
 	};
 	
 	constant cc;

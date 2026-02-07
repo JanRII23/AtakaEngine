@@ -188,8 +188,5 @@
     <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\TextureManager\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DX3D\Include\DX3D\Math\Vector2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
