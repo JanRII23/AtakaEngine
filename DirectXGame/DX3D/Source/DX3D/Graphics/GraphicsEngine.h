@@ -3,6 +3,7 @@
 #include <DX3D/Core/Base.h>
 #include <DX3D/Math/Vec3.h>
 #include <DX3D/Math/Vec4.h>
+#include <DX3D/Math/Vector2D.h>
 #include <Windows.h>
 #include <DX3D/Core/InputListener.h>
 #include <DX3D/Core/IFocusListener.h>
@@ -40,9 +41,10 @@ namespace dx3d
 	private:
 		struct Vertex
 		{
-			Vec3 position;
-			Vec4 color;
-			Vec4 color1;
+			Vector3D position;
+			Vector2D texcoord;
+			/*Vec4 color;
+			Vec4 color1;*/
 		};
 	private:
 		std::shared_ptr<GraphicsDevice> m_graphicsDevice{};
