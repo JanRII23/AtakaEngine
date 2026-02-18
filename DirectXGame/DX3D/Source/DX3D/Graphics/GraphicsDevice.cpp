@@ -5,6 +5,7 @@
 #include <DX3D/Graphics/ShaderBinary.h>
 #include <DX3D/Graphics/GraphicsPipelineState.h>
 #include <DX3D/Graphics/VertexBuffer.h>
+#include <DX3D/Graphics/TextureBuffer.h>
 #include <DX3D/Graphics/ConstantBuffer.h>
 #include <DX3D/Graphics/VertexShaderSignature.h>
 #include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>

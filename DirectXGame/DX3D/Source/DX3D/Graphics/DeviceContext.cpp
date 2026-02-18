@@ -2,9 +2,11 @@
 #include <DX3D/Graphics/SwapChain.h>
 #include <DX3D/Graphics/GraphicsPipelineState.h>
 #include <DX3D/Graphics/VertexBuffer.h>
+#include <DX3D/Graphics/TextureBuffer.h>
 #include <DX3D/Graphics/ConstantBuffer.h>
 #include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>
 #include <DX3D/Math/Matrix4x4.h>
+#include <DX3D/Graphics/ResourceManager/TextureManager/Texture.h>
 
 dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc): GraphicsResource(gDesc)
 {
@@ -66,6 +68,15 @@ void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, consta
 	m_context->PSSetConstantBuffers(0, 1, &buf);
 }
 
+void dx3d::DeviceContext::setTextureBuffer(const TextureBuffer& buffer, constant cc, TexturePtr texture)
+{
+	auto buf = buffer.m_buffer.Get();
+
+	m_context->UpdateSubresource(buf, NULL, NULL, &cc, NULL, NULL);
+	m_context->VSSetShaderResources(0, 1, &texture->m_shader_res_view);
+	m_context->PSSetShaderResources(0, 1, &texture->m_shader_res_view);
+}
+
 void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
 {
 	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
@@ -86,7 +97,7 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 	// NOTE: old setup #1
 	//cc.m_world.setIdentity();
 
-	//cc.m_world.setScaleVector3D(Vector3D(attr.m_scale_cube, attr.m_scale_cube, attr.m_scale_cube));
+	//cc.m_world.setScaleVector3D(Vector3D(attr.m_scale_cube, attr.m_scale_1cube, attr.m_scale_cube));
 
 	////temp.setRotationZ(attr.m_delta_scale);
 	//temp.setRotationZ(0.0f);
@@ -154,5 +165,3 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 
 	return cc;
 }
-
-

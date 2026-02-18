@@ -12,6 +12,8 @@ namespace dx3d
 	private:
 		ID3D11Device* m_device = nullptr;
 		ID3D11Resource* m_texture = nullptr;
+		ID3D11ShaderResourceView* m_shader_res_view = nullptr;
+		friend class DeviceContext;
 	};
 }
 

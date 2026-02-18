@@ -23,6 +23,7 @@ namespace dx3d
 		IndexBufferPtr createIndexBuffer(const IndexBufferDesc& desc);
 		ID3D11Device* getD3DDevice() const noexcept;
 
+
 		void executeCommandList(DeviceContext& context);
 	private:
 		GraphicsResourceDesc getGraphicsResourceDesc() const noexcept;

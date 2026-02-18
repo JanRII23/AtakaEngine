@@ -1,16 +1,18 @@
 struct VSInput
 {
     float3 position : POSITION0;
-    float4 color : COLOR0;
-    float4 color1 : COLOR1;
+    float2 texcoord : TEXCOORD0;
+    //float4 color : COLOR0;
+    //float4 color1 : COLOR1;
 };
 
 struct VSOutput
 {
     float4 position : SV_Position;
-    float4 color : COLOR0;
-    float4 color1 : COLOR1;
-};
+    float2 texcoord : TEXCOORD0;
+    //float4 color : COLOR0;
+    //float4 color1 : COLOR1;
+}; 
 
 cbuffer constant : register(b0)
 {
@@ -34,8 +36,9 @@ VSOutput VSMain(VSInput input)
     //SCREEN SPACE
     output.position = mul(output.position, m_proj);
     
-    output.color = input.color;
-    output.color1 = input.color1;
+    output.texcoord = input.texcoord;
+    //output.color = input.color;
+    //output.color1 = input.color1;
     return output;
 }
 
