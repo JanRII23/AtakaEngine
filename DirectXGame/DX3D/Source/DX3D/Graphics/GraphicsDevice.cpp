@@ -5,6 +5,7 @@
 #include <DX3D/Graphics/ShaderBinary.h>
 #include <DX3D/Graphics/GraphicsPipelineState.h>
 #include <DX3D/Graphics/VertexBuffer.h>
+#include <DX3D/Graphics/TextureBuffer.h>
 #include <DX3D/Graphics/ConstantBuffer.h>
 #include <DX3D/Graphics/VertexShaderSignature.h>
 #include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>
@@ -75,6 +76,17 @@ ConstantBufferPtr dx3d::GraphicsDevice::createConstantBuffer(const ConstantBuffe
 IndexBufferPtr dx3d::GraphicsDevice::createIndexBuffer(const IndexBufferDesc& desc)
 {
 	return std::make_shared<IndexBuffer>(desc, getGraphicsResourceDesc());
+}
+
+TextureBufferPtr dx3d::GraphicsDevice::createTextureBufferPtr(const TextureBufferDesc& desc)
+{
+	return std::make_shared<TextureBuffer>(desc, getGraphicsResourceDesc());
+}
+
+
+ID3D11Device* dx3d::GraphicsDevice::getD3DDevice() const noexcept
+{
+	return m_d3dDevice.Get();
 }
 
 void dx3d::GraphicsDevice::executeCommandList(DeviceContext& context)

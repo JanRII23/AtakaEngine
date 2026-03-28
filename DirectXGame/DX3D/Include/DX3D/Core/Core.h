@@ -19,6 +19,11 @@ namespace dx3d
 	class VertexShaderSignature;
 	class ConstantBuffer;
 	class IndexBuffer;
+	class Resource;
+	class ResourceManager;
+	class Texture;
+	class TextureManager;
+	class TextureBuffer;
 
 	using i32 = int;
 	using ui32 = unsigned int;
@@ -33,5 +38,8 @@ namespace dx3d
 	using VertexBufferPtr = std::shared_ptr<VertexBuffer>;
 	using VertexShaderSignaturePtr = std::shared_ptr<VertexShaderSignature>;
 	using ConstantBufferPtr = std::shared_ptr<ConstantBuffer>;
+	using TextureBufferPtr = std::shared_ptr<TextureBuffer>;
 	using IndexBufferPtr = std::shared_ptr<IndexBuffer>;
+	using ResourcePtr = std::shared_ptr<Resource>;
+	using TexturePtr = std::shared_ptr<Texture>;
 }

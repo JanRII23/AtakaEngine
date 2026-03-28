@@ -8,6 +8,12 @@
 
 int main()
 {
+	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	if (FAILED(hr))
+	{
+		return EXIT_FAILURE;
+	}
+
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	try 
 	{
@@ -35,6 +41,8 @@ int main()
 		return EXIT_FAILURE;
 	}
 	
+	CoUninitialize();
+
 	//_CrtDumpMemoryLeaks();
 	return EXIT_SUCCESS;
 }

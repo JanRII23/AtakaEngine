@@ -21,6 +21,9 @@ namespace dx3d
 		VertexShaderSignaturePtr createVertexShaderSignature(const VertexShaderSignatureDesc& desc);
 		ConstantBufferPtr createConstantBuffer(const ConstantBufferDesc& desc);
 		IndexBufferPtr createIndexBuffer(const IndexBufferDesc& desc);
+		TextureBufferPtr createTextureBufferPtr(const TextureBufferDesc& desc);
+		ID3D11Device* getD3DDevice() const noexcept;
+
 
 		void executeCommandList(DeviceContext& context);
 	private:

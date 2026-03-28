@@ -9,10 +9,11 @@ namespace dx3d
 {
 	class InputSystem
 	{
-	public:
+	private:
 		InputSystem();
 		~InputSystem();
 
+	public:
 		void update(const Rect& size);
 		void addListener(InputListener* listener);
 		void removeListener(InputListener* listener);
@@ -20,12 +21,15 @@ namespace dx3d
 		void showCursor(bool showMouse);
 
 		static InputSystem* get();
+		static void create();
+		static void release();
 	private:
 		std::unordered_set<InputListener*> m_set_listeners;
 		uc8 m_keys_state[256] = {};
 		uc8 m_old_keys_state[256] = {};
 		Point m_old_mouse_pos;
 		bool m_first_time = true;
+		static InputSystem* m_system;
 	};
 }
 

@@ -3,6 +3,7 @@
 #include <DX3D/Graphics/DeviceContext.h>
 #include <DX3D/Graphics/SwapChain.h>
 #include <DX3D/Graphics/VertexBuffer.h>
+#include <DX3D/Graphics/TextureBuffer.h>
 #include <DX3D/Graphics/ConstantBuffer.h>
 #include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>
 #include <DX3D/Math/Vec3.h>
@@ -48,43 +49,111 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
 
+	m_tex_manager = new TextureManager();
+	if (!m_tex_manager) DX3DLogThrowError("Failed to create Texture Manager.");
+
+	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/wood.jpg", *m_graphicsDevice);
+
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
+
+	Vec3 position_list[] =
+	{
+		//FRONT
+		{-0.5f, -0.5f, -0.5f},
+		{-0.5f,  0.5f, -0.5f},
+		{ 0.5f,  0.5f, -0.5f},
+		{ 0.5f, -0.5f, -0.5f},
+
+		//BACK
+		{-0.5f, -0.5f,  0.5f},
+		{-0.5f,  0.5f,  0.5f},
+		{ 0.5f,  0.5f,  0.5f},
+		{ 0.5f, -0.5f,  0.5f}
+	};
+
+	Vector2D texcoord_list[] =
+	{
+		{ Vector2D(0.0f, 0.0f) },
+		{ Vector2D(0.0f, 1.0f) },
+		{ Vector2D(1.0f, 0.0f) },
+		{ Vector2D(1.0f, 1.0f) }
+	};
 
 	const Vertex vertexList[] =
 	{
-		//FRONT
-		{ {-0.5f, -0.5f, -0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 0 front-bottom-left
-		{ {-0.5f,  0.5f, -0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 1 front-top-left
-		{ { 0.5f,  0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 2 front-top-right
-		{ { 0.5f, -0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 3 front-bottom-right
+		{ position_list[0], texcoord_list[1] },
+		{ position_list[1], texcoord_list[0] },
+		{ position_list[2], texcoord_list[2] },
+		{ position_list[3], texcoord_list[3] },
 
-		//BACK
-		{ {-0.5f, -0.5f,  0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 4 back-bottom-left
-		{ {-0.5f,  0.5f,  0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 5 back-top-left
-		{ { 0.5f,  0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 6 back-top-right
-		{ { 0.5f, -0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }  // 7 back-bottom-right
+		{ position_list[7], texcoord_list[1] },
+		{ position_list[6], texcoord_list[0] },
+		{ position_list[5], texcoord_list[2] },
+		{ position_list[4], texcoord_list[3] },
+
+		{ position_list[1], texcoord_list[1] },
+		{ position_list[5], texcoord_list[0] },
+		{ position_list[6], texcoord_list[2] },
+		{ position_list[2], texcoord_list[3] },
+
+		{ position_list[0], texcoord_list[1] },
+		{ position_list[3], texcoord_list[0] },
+		{ position_list[7], texcoord_list[2] },
+		{ position_list[4], texcoord_list[3] },
+
+		{ position_list[3], texcoord_list[1] },
+		{ position_list[2], texcoord_list[0] },
+		{ position_list[6], texcoord_list[2] },
+		{ position_list[7], texcoord_list[3] },
+
+		{ position_list[0], texcoord_list[1] },
+		{ position_list[4], texcoord_list[0] },
+		{ position_list[5], texcoord_list[2] },
+		{ position_list[1], texcoord_list[3] }
 	};
+
+	//const Vertex vertexList[] =
+	//{
+	//	//FRONT
+	//	{ {-0.5f, -0.5f, -0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 0 front-bottom-left
+	//	{ {-0.5f,  0.5f, -0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 1 front-top-left
+	//	{ { 0.5f,  0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 2 front-top-right
+	//	{ { 0.5f, -0.5f, -0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 3 front-bottom-right
+
+	//	//BACK
+	//	{ {-0.5f, -0.5f,  0.5f}, {1, 0, 0, 1}, {0, 1, 0, 1} }, // 4 back-bottom-left
+	//	{ {-0.5f,  0.5f,  0.5f}, {0, 1, 0, 1}, {0, 0, 1, 1} }, // 5 back-top-left
+	//	{ { 0.5f,  0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }, // 6 back-top-right
+	//	{ { 0.5f, -0.5f,  0.5f}, {0, 0, 1, 1}, {1, 0, 0, 1} }  // 7 back-bottom-right
+	//};
 	
 	constant cc;
 	cc.m_time = 0;
 	m_cb = device.createConstantBuffer({ &cc, sizeof(constant) });
-
+	m_tex = device.createTextureBufferPtr({ &cc, sizeof(constant) });
 	m_vb = device.createVertexBuffer({vertexList, std::size(vertexList), sizeof(Vertex)});
 
+	//TODO: not really sure about the pattern here that is being established, pretty sure this is wrong tho the transformation for the texture kinda broken and not an actual cube
 	i32 index_list[] =
 	{
 		// FRONT
-		0,1,2, 2,3,0,
+		0,1,2, 
+		2,3,0,
 		// BACK
-		7,6,5, 5,4,7,
+		7,6,5, 
+		5,4,7,
 		// TOP
-		1,5,6, 6,2,1,
+		14,13,12, 
+		12,13,14,
 		// BOTTOM
-		0,3,7, 7,4,0,
+		21,20,19, 
+		19,20,21,
 		// RIGHT
-		3,2,6, 6,7,3,
+		28,27,26, 
+		26,27,28,
 		// LEFT
-		0,4,5, 5,1,0
+		35,34,33, 
+		33,34,35
 	};
 
 	m_ib = device.createIndexBuffer({ index_list , std::size(index_list)});
@@ -118,6 +187,9 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);
+
+	auto& tex = *m_tex;
+	context.setTextureBuffer(tex, cc, m_wood_tex);
 
 	auto& vb = *m_vb;
 	context.setVertexBuffer(vb);
@@ -238,4 +310,9 @@ void dx3d::GraphicsEngine::onRightMouseDown(const Point& mouse_pos)
 void dx3d::GraphicsEngine::onRightMouseUp(const Point& mouse_pos)
 {
 	m_scale_cube = 1.0f;
+}
+
+TextureManager* dx3d::GraphicsEngine::getTextureManager() noexcept
+{
+	return m_tex_manager;
 }

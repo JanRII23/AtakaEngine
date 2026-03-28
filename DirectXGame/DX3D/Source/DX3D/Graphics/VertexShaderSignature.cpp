@@ -37,6 +37,14 @@ dx3d::VertexShaderSignature::VertexShaderSignature(const VertexShaderSignatureDe
 	//	{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	//  {"COLOR", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	//};
+
+	//constexpr D3D11_INPUT_ELEMENT_DESC layout[] =
+	//{
+	//	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	//	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
+	//};
+
+	//TODO: not sure how but this m_elements needs to convert similar to the layout above for the texture mapping
 	for (auto i : std::views::iota(0u, m_numElements))
 	{
 		auto param = params[i];

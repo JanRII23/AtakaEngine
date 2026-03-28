@@ -3,10 +3,12 @@
 #include <DX3D/Core/Base.h>
 #include <DX3D/Math/Vec3.h>
 #include <DX3D/Math/Vec4.h>
+#include <DX3D/Math/Vector2D.h>
 #include <Windows.h>
 #include <DX3D/Core/InputListener.h>
 #include <DX3D/Core/IFocusListener.h>
 #include <DX3D/Math/Matrix4x4.h>
+#include <DX3D/Graphics/ResourceManager/TextureManager/TextureManager.h>
 
 namespace dx3d
 {
@@ -34,12 +36,15 @@ namespace dx3d
 		void onRightMouseDown(const Point& mouse_pos) override;
 		void onRightMouseUp(const Point& mouse_pos) override;
 
+		TextureManager* getTextureManager() noexcept;
+
 	private:
 		struct Vertex
 		{
 			Vec3 position;
-			Vec4 color;
-			Vec4 color1;
+			Vector2D texcoord;
+			/*Vec4 color;
+			Vec4 color1;*/
 		};
 	private:
 		std::shared_ptr<GraphicsDevice> m_graphicsDevice{};
@@ -48,6 +53,11 @@ namespace dx3d
 		VertexBufferPtr m_vb{};
 		ConstantBufferPtr m_cb{};
 		IndexBufferPtr m_ib{};
+		TextureManager * m_tex_manager = nullptr;
+		TextureBufferPtr m_tex{};
+		TexturePtr m_wood_tex;
+
+
 	private:
 		ULONGLONG m_old_delta = 0;
 		ULONGLONG m_new_delta = 0;

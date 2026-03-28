@@ -3,6 +3,7 @@
 #include <DX3D/Graphics/GraphicsEngine.h>
 #include <DX3D/Core/Logger.h>
 #include <DX3D/Game/Display.h>
+#include <DX3D/Core/InputSystem.h>
 
 dx3d::Game::Game(const GameDesc& desc) :
 	Base({ *std::make_unique<Logger>(desc.logLevel).release()}),
@@ -13,6 +14,10 @@ dx3d::Game::Game(const GameDesc& desc) :
 
 	m_display->setGraphicsEngine(m_graphicsEngine.get());
 
+	try {
+		InputSystem::create();
+	} catch (...) { DX3DLogInfo("Game Failed to Initialize."); }
+
 	DX3DLogInfo("Game Initialized.");
 }
 
@@ -20,6 +25,7 @@ dx3d::Game::Game(const GameDesc& desc) :
 dx3d::Game::~Game()
 {
 	DX3DLogInfo("Game is shutting down...");
+	InputSystem::release();
 }
 
 void dx3d::Game::onInternalUpdate()

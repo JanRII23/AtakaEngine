@@ -2,6 +2,9 @@
 #include <DX3D/Core/InputListener.h>
 #include <Windows.h>
 #include <unordered_set>
+#include <exception>
+
+dx3d::InputSystem* dx3d::InputSystem::m_system = nullptr;
 
 dx3d::InputSystem::InputSystem()
 {
@@ -9,6 +12,7 @@ dx3d::InputSystem::InputSystem()
 
 dx3d::InputSystem::~InputSystem()
 {
+    InputSystem::m_system = nullptr;
 }
 
 void dx3d::InputSystem::update(const Rect& size)
@@ -124,3 +128,16 @@ dx3d::InputSystem* dx3d::InputSystem::get()
     static InputSystem system;
     return &system;
 }
+
+void dx3d::InputSystem::create()
+{
+    if (InputSystem::m_system) throw std::exception("Input System already created.");
+    InputSystem::m_system = new InputSystem();
+}
+
+void dx3d::InputSystem::release()
+{
+    if (!InputSystem::m_system) return;
+    delete InputSystem::m_system;
+}
+

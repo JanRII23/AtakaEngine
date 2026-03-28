@@ -91,6 +91,12 @@ namespace dx3d
 		ui32 size_list{};
 	};
 
+	struct TextureBufferDesc
+	{
+		const void* textureBuffer{};
+		ui32 size_buffer;
+	};
+
 	struct QuadPositionAttr
 	{
 		const Rect& size;

@@ -73,7 +73,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>Bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>Intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>DX3D/Include;DX3D/Source;$(IncludePath)</IncludePath>
+    <IncludePath>DX3D/Include;DX3D/Source;Libs/DirectXTex/include;$(IncludePath)</IncludePath>
+    <LibraryPath>Libs\DirectXTex\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -115,7 +116,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;DirectXTexD.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -153,12 +154,18 @@
     <ClCompile Include="DX3D\Source\DX3D\Graphics\VertexShaderSignature.cpp" />
     <ClCompile Include="DX3D\Source\DX3D\Graphics\IndexBuffer\IndexBuffer.cpp" />
     <ClCompile Include="DX3D\Source\DX3D\Core\InputSystem.cpp" />
+    <ClCompile Include="DX3D\Source\DX3D\Graphics\ResourceManager\ResourceManager.cpp" />
+    <ClCompile Include="DX3D\Source\DX3D\Graphics\ResourceManager\Resource.cpp" />
+    <ClCompile Include="DX3D\Source\DX3D\Graphics\ResourceManager\TextureManager\Texture.cpp" />
+    <ClCompile Include="DX3D\Source\DX3D\Graphics\ResourceManager\TextureManager\TextureManager.cpp" />
+    <ClCompile Include="DX3D\Source\DX3D\Graphics\TextureBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX3D\Include\DX3D\Core\IFocusListener.h" />
     <ClInclude Include="DX3D\Include\DX3D\Core\InputListener.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Matrix4x4.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Point.h" />
+    <ClInclude Include="DX3D\Include\DX3D\Math\Vector2D.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Vector3D.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Vector4D.h" />
     <ClInclude Include="DX3D\Source\DX3D\Graphics\ConstantBuffer.h" />
@@ -186,6 +193,11 @@
     <ClInclude Include="DX3D\Source\DX3D\Graphics\VertexShaderSignature.h" />
     <ClInclude Include="DX3D\Source\DX3D\Graphics\IndexBuffer\IndexBuffer.h" />
     <ClInclude Include="DX3D\Include\DX3D\Core\InputSystem.h" />
+    <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\ResourceManager.h" />
+    <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\Resource.h" />
+    <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\TextureManager\Texture.h" />
+    <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\TextureManager\TextureManager.h" />
+    <ClInclude Include="DX3D\Source\DX3D\Graphics\TextureBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
