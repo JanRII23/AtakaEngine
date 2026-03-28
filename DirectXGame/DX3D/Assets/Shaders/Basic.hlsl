@@ -1,3 +1,6 @@
+Texture2D Texture : register(t0);
+sampler TextureSampler : register(s0);
+
 struct VSInput
 {
     float3 position : POSITION0;
@@ -25,6 +28,7 @@ cbuffer constant : register(b0)
 
 VSOutput VSMain(VSInput input)
 {
+    //TODO: pretty sure there is some more issue needed to resolve before I can move on
     VSOutput output;
     
     //WORLD SPACE
@@ -45,5 +49,6 @@ VSOutput VSMain(VSInput input)
 
 float4 PSMain(VSOutput input) : SV_Target
 {
-    return lerp(input.color, input.color1, (sin(m_time / 1000.0f) + 1.0f) / 2.0f);
+    return Texture.Sample(TextureSampler, input.texcoord);
+    //return lerp(input.color, input.color1, (sin(m_time / 1000.0f) + 1.0f) / 2.0f);
 }

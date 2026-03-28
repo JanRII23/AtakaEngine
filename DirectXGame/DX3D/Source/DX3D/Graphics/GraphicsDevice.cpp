@@ -78,6 +78,12 @@ IndexBufferPtr dx3d::GraphicsDevice::createIndexBuffer(const IndexBufferDesc& de
 	return std::make_shared<IndexBuffer>(desc, getGraphicsResourceDesc());
 }
 
+TextureBufferPtr dx3d::GraphicsDevice::createTextureBufferPtr(const TextureBufferDesc& desc)
+{
+	return std::make_shared<TextureBuffer>(desc, getGraphicsResourceDesc());
+}
+
+
 ID3D11Device* dx3d::GraphicsDevice::getD3DDevice() const noexcept
 {
 	return m_d3dDevice.Get();

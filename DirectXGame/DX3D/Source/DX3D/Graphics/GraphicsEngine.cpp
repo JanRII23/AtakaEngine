@@ -52,7 +52,7 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	m_tex_manager = new TextureManager();
 	if (!m_tex_manager) DX3DLogThrowError("Failed to create Texture Manager.");
 
-	m_wood_tex = m_tex_manager->createTextureFromFile(L"Assets/Textures/wood.jpg", *m_graphicsDevice);
+	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/wood.jpg", *m_graphicsDevice);
 
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
 
@@ -130,10 +130,10 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	constant cc;
 	cc.m_time = 0;
 	m_cb = device.createConstantBuffer({ &cc, sizeof(constant) });
-
+	m_tex = device.createTextureBufferPtr({ &cc, sizeof(constant) });
 	m_vb = device.createVertexBuffer({vertexList, std::size(vertexList), sizeof(Vertex)});
 
-	//TODO: not really sure about the pattern here that is being established 
+	//TODO: not really sure about the pattern here that is being established, pretty sure this is wrong tho the transformation for the texture kinda broken and not an actual cube
 	i32 index_list[] =
 	{
 		// FRONT
