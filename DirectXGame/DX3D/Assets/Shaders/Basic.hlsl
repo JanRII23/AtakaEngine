@@ -28,7 +28,6 @@ cbuffer constant : register(b0)
 
 VSOutput VSMain(VSInput input)
 {
-    //TODO: pretty sure there is some more issue needed to resolve before I can move on
     VSOutput output;
     
     //WORLD SPACE

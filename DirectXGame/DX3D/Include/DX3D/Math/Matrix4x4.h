@@ -50,7 +50,7 @@ namespace dx3d
 
 		void setRotationX(f32 x)
 		{
-			//setIdentity();
+			setIdentity();
 			m_mat[1][1] = std::cosf(x);
 			m_mat[1][2] = std::sinf(x);
 			m_mat[2][1] = -std::sinf(x);
@@ -59,7 +59,7 @@ namespace dx3d
 
 		void setRotationY(f32 y)
 		{
-			//setIdentity();
+			setIdentity();
 			m_mat[0][0] = std::cosf(y);
 			m_mat[0][2] = -std::sinf(y);
 			m_mat[2][0] = std::sinf(y);

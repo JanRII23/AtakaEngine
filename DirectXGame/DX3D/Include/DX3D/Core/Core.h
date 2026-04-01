@@ -24,6 +24,8 @@ namespace dx3d
 	class Texture;
 	class TextureManager;
 	class TextureBuffer;
+	class Mesh;
+	class MeshManager;
 
 	using i32 = int;
 	using ui32 = unsigned int;
@@ -42,4 +44,5 @@ namespace dx3d
 	using IndexBufferPtr = std::shared_ptr<IndexBuffer>;
 	using ResourcePtr = std::shared_ptr<Resource>;
 	using TexturePtr = std::shared_ptr<Texture>;
+	using MeshPtr = std::shared_ptr<Mesh>;
 }
