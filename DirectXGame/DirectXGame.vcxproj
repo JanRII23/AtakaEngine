@@ -170,6 +170,7 @@
     <ClInclude Include="DX3D\Include\DX3D\Math\Vector2D.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Vector3D.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Vector4D.h" />
+    <ClInclude Include="DX3D\Include\DX3D\Math\VertexMesh.h" />
     <ClInclude Include="DX3D\Source\DX3D\Graphics\ConstantBuffer.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Vec3.h" />
     <ClInclude Include="DX3D\Include\DX3D\Math\Vec4.h" />
@@ -202,6 +203,15 @@
     <ClInclude Include="DX3D\Source\DX3D\Graphics\TextureBuffer.h" />
     <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\MeshManager\MeshManager.h" />
     <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\MeshManager\Mesh.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="DX3D\Assets\Shaders\VertexMeshLayoutShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

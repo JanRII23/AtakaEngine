@@ -209,5 +209,11 @@
     <ClInclude Include="DX3D\Source\DX3D\Graphics\ResourceManager\MeshManager\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DX3D\Include\DX3D\Math\VertexMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="DX3D\Assets\Shaders\VertexMeshLayoutShader.hlsl" />
   </ItemGroup>
 </Project>

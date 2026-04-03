@@ -43,7 +43,8 @@ namespace dx3d
 	enum class ShaderType
 	{
 		VertexShader = 0,
-		PixelShader
+		PixelShader,
+		VertexMeshLayoutShader
 	};
 
 	struct ShaderCompileDesc

@@ -37,6 +37,7 @@ namespace dx3d
 		void onRightMouseUp(const Point& mouse_pos) override;
 
 		TextureManager* getTextureManager() noexcept;
+		void getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size) const noexcept;
 
 	private:
 		struct Vertex
@@ -57,6 +58,8 @@ namespace dx3d
 		TextureBufferPtr m_tex{};
 		TexturePtr m_wood_tex;
 
+		unsigned char m_mesh_layout_byte_code[1024];
+		size_t m_mesh_layout_size = 0;
 
 	private:
 		ULONGLONG m_old_delta = 0;

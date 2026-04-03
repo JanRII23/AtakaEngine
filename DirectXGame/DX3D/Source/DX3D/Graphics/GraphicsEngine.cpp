@@ -44,6 +44,24 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	auto ps = device.compileShader({ shaderFilePath, shaderSourceCode, shaderSourceCodeSize, "PSMain", ShaderType::PixelShader });
 	auto vsSig = device.createVertexShaderSignature({ vs });
 
+	void* shader_byte_code = nullptr;
+	size_t size_shader = 0;
+	constexpr char vertexMeshLayoutShaderFilePath[] = "DX3D/Assets/Shaders/VertexMeshLayout.hlsl";
+	std::ifstream vertexMeshLayoutShaderStream(vertexMeshLayoutShaderFilePath);
+
+	if (!vertexMeshLayoutShaderStream) DX3DLogThrowError("Failed to vertex mesh layout shader file.");
+	std::string vertexMeshLayoutShaderFileData{
+		std::istreambuf_iterator<char>(vertexMeshLayoutShaderStream),
+		std::istreambuf_iterator<char>()
+	};
+
+	auto vertexMeshLayoutShaderSourceCode = vertexMeshLayoutShaderFileData.c_str();
+	auto vertexMeshLayoutShaderSourceCodeSize = vertexMeshLayoutShaderFileData.length();
+
+	auto vm = device.compileShader({ vertexMeshLayoutShaderFilePath, vertexMeshLayoutShaderSourceCode, vertexMeshLayoutShaderSourceCodeSize, "vsmain", ShaderType::VertexMeshLayoutShader });
+	::memcpy(m_mesh_layout_byte_code, shader_byte_code, size_shader);
+	m_mesh_layout_size = size_shader;
+
 	m_pipeline = device.createGraphicsPipelineState({ *vsSig, *ps });
 
 	InputSystem::get()->addListener(this);
@@ -51,6 +69,7 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_tex_manager = new TextureManager();
 	if (!m_tex_manager) DX3DLogThrowError("Failed to create Texture Manager.");
+	
 
 	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/wood.jpg", *m_graphicsDevice);
 
@@ -315,4 +334,10 @@ void dx3d::GraphicsEngine::onRightMouseUp(const Point& mouse_pos)
 TextureManager* dx3d::GraphicsEngine::getTextureManager() noexcept
 {
 	return m_tex_manager;
+}
+
+void dx3d::GraphicsEngine::getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size) const noexcept
+{
+	*byte_code = m_mesh_layout_byte_code;
+	*size = m_mesh_layout_size;
 }
