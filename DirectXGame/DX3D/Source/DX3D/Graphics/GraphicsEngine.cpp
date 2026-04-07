@@ -44,6 +44,9 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	auto ps = device.compileShader({ shaderFilePath, shaderSourceCode, shaderSourceCodeSize, "PSMain", ShaderType::PixelShader });
 	auto vsSig = device.createVertexShaderSignature({ vs });
 
+	m_mesh_manager = new MeshManager();
+	if (!m_mesh_manager) DX3DLogThrowError("Failed to create Mesh Manager.");
+
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
 	constexpr char vertexMeshLayoutShaderFilePath[] = "DX3D/Assets/Shaders/VertexMeshLayout.hlsl";
@@ -72,6 +75,9 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	
 
 	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/wood.jpg", *m_graphicsDevice);
+
+	//TODO: need to import the teapot asset
+	//m_mesh = 
 
 	m_world_cam.setTranslation(Vector3D(0, 0, 3));
 
@@ -336,7 +342,12 @@ TextureManager* dx3d::GraphicsEngine::getTextureManager() noexcept
 	return m_tex_manager;
 }
 
-void dx3d::GraphicsEngine::getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size) const noexcept
+MeshManager* dx3d::GraphicsEngine::getMeshManager()
+{
+	return m_mesh_manager;
+}
+
+void dx3d::GraphicsEngine::getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size)
 {
 	*byte_code = m_mesh_layout_byte_code;
 	*size = m_mesh_layout_size;

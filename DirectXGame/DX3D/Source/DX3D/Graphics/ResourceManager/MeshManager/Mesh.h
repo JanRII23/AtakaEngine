@@ -4,6 +4,7 @@
 #include <DX3D/Graphics/VertexBuffer.h>
 #include <DX3D/Graphics/IndexBuffer/IndexBuffer.h>
 
+
 namespace dx3d
 {
 	class Mesh: public Resource
@@ -11,6 +12,8 @@ namespace dx3d
 	public:
 		Mesh(const wchar_t* full_path, GraphicsDevice& device);
 		~Mesh();
+		const VertexBufferPtr& getVertexBuffer();
+		const IndexBufferPtr& getIndexBuffer();
 	private:
 		VertexBuffer m_vertex_buffer;
 		IndexBuffer m_index_buffer;

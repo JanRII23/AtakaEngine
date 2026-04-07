@@ -9,6 +9,7 @@
 #include <DX3D/Core/IFocusListener.h>
 #include <DX3D/Math/Matrix4x4.h>
 #include <DX3D/Graphics/ResourceManager/TextureManager/TextureManager.h>
+#include <DX3D/Graphics/ResourceManager/MeshManager/MeshManager.h>
 
 namespace dx3d
 {
@@ -37,7 +38,8 @@ namespace dx3d
 		void onRightMouseUp(const Point& mouse_pos) override;
 
 		TextureManager* getTextureManager() noexcept;
-		void getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size) const noexcept;
+		MeshManager* getMeshManager();
+		void getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size);
 
 	private:
 		struct Vertex
@@ -57,6 +59,8 @@ namespace dx3d
 		TextureManager * m_tex_manager = nullptr;
 		TextureBufferPtr m_tex{};
 		TexturePtr m_wood_tex;
+		MeshManager* m_mesh_manager = nullptr;
+		MeshPtr m_mesh;
 
 		unsigned char m_mesh_layout_byte_code[1024];
 		size_t m_mesh_layout_size = 0;

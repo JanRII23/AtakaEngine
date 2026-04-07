@@ -32,11 +32,13 @@ dx3d::Mesh::Mesh(const wchar_t* full_path, GraphicsDevice& device) : Resource(fu
 	if (shapes.size() > 1) throw std::exception("Mesh not create successfully");
 
 	std::vector<VertexMesh> list_vertices;
+	std::vector<unsigned int> list_indices;
 
 	for (size_t s = 0; s < shapes.size(); s++) 
 	{
 		size_t index_offset = 0;
 		list_vertices.reserve(shapes[s].mesh.indices.size());
+		list_indices.reserve(shapes[s].mesh.indices.size());
 
 		for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) 
 		{
@@ -55,15 +57,38 @@ dx3d::Mesh::Mesh(const wchar_t* full_path, GraphicsDevice& device) : Resource(fu
 
 				VertexMesh vertex(Vector3D(vx, vy, vz), Vector2D(tx, ty));
 				list_vertices.push_back(vertex);
+
+				list_indices.push_back(index_offset + v);
 			}
 
 			index_offset += num_face_verts;
 		}
 	}
 
-	device.createVertexBuffer(&list_vertices[0], sizeof(VertexMesh), list_vertices.size(), );
+	void* shader_byte_code = nullptr;
+	size_t size_shader = 0;
+
+	//TODO: fix the reference here I think I need to migrate from device and need the engine instead?
+	// 
+	//m_device = device.getGraphicsEngine();
+
+	//m_device.getVertexMeshLayoutShaderByteCodeAndSize(&shader_byte_code, &size_shader);
+
+	//m_vertex_buffer = m_device.createVertexBuffer(&list_vertices[0], sizeof(VertexMesh), list_vertices.size(), shader_byte_code, size_shader);
+
+	//m_index_buffer = device.createIndexBuffer(&list_indices[0], (UINT)list_indices.size());
 }
 
 dx3d::Mesh::~Mesh()
 {
+}
+
+const VertexBufferPtr& dx3d::Mesh::getVertexBuffer()
+{
+	return m_vertex_buffer;
+}
+
+const IndexBufferPtr& dx3d::Mesh::getIndexBuffer()
+{
+	return m_index_buffer;
 }
