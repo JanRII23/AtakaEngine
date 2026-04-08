@@ -89,6 +89,12 @@ ID3D11Device* dx3d::GraphicsDevice::getD3DDevice() const noexcept
 	return m_d3dDevice.Get();
 }
 
+void dx3d::GraphicsDevice::getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size)
+{
+	*byte_code = m_mesh_layout_byte_code;
+	*size = m_mesh_layout_size;
+}
+
 void dx3d::GraphicsDevice::executeCommandList(DeviceContext& context)
 {
 	Microsoft::WRL::ComPtr<ID3D11CommandList> list{};

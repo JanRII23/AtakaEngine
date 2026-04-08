@@ -39,7 +39,6 @@ namespace dx3d
 
 		TextureManager* getTextureManager() noexcept;
 		MeshManager* getMeshManager();
-		void getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size);
 
 	private:
 		struct Vertex

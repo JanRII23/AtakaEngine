@@ -78,6 +78,8 @@ namespace dx3d
 		const void* vertexList{};
 		ui32 vertexListSize{};
 		ui32 vertexSize{};
+		void* shader_byte_code = nullptr;
+		size_t size_shader = 0;
 	};
 
 	struct ConstantBufferDesc

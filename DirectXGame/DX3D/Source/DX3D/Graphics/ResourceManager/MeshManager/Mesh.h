@@ -15,8 +15,8 @@ namespace dx3d
 		const VertexBufferPtr& getVertexBuffer();
 		const IndexBufferPtr& getIndexBuffer();
 	private:
-		VertexBuffer m_vertex_buffer;
-		IndexBuffer m_index_buffer;
+		VertexBufferPtr m_vertex_buffer;
+		IndexBufferPtr m_index_buffer;
 		ID3D11Device* m_device = nullptr;
 		friend class DeviceContext;
 	};

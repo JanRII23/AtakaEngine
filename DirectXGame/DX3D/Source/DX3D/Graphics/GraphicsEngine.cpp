@@ -49,10 +49,10 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
-	constexpr char vertexMeshLayoutShaderFilePath[] = "DX3D/Assets/Shaders/VertexMeshLayout.hlsl";
+	constexpr char vertexMeshLayoutShaderFilePath[] = "DX3D/Assets/Shaders/VertexMeshLayoutShader.hlsl";
 	std::ifstream vertexMeshLayoutShaderStream(vertexMeshLayoutShaderFilePath);
 
-	if (!vertexMeshLayoutShaderStream) DX3DLogThrowError("Failed to vertex mesh layout shader file.");
+	if (!vertexMeshLayoutShaderStream) DX3DLogThrowError("Failed to create vertex mesh layout shader file.");
 	std::string vertexMeshLayoutShaderFileData{
 		std::istreambuf_iterator<char>(vertexMeshLayoutShaderStream),
 		std::istreambuf_iterator<char>()
@@ -345,10 +345,4 @@ TextureManager* dx3d::GraphicsEngine::getTextureManager() noexcept
 MeshManager* dx3d::GraphicsEngine::getMeshManager()
 {
 	return m_mesh_manager;
-}
-
-void dx3d::GraphicsEngine::getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size)
-{
-	*byte_code = m_mesh_layout_byte_code;
-	*size = m_mesh_layout_size;
 }
