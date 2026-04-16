@@ -10,6 +10,7 @@
 #include <fstream>
 #include <DX3D/Core/InputSystem.h>
 #include <DX3D/Math/Matrix4x4.h>
+#include <DX3D/Graphics/ResourceManager/MeshManager/Mesh.h>
 
 using namespace dx3d;
 
@@ -74,10 +75,9 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	if (!m_tex_manager) DX3DLogThrowError("Failed to create Texture Manager.");
 	
 
-	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/wood.jpg", *m_graphicsDevice);
+	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/brick.png", *m_graphicsDevice);
 
-	//TODO: need to import the teapot asset
-	//m_mesh = 
+	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Textures/teapot.obj", *m_graphicsDevice);
 
 	m_world_cam.setTranslation(Vector3D(0, 0, 3));
 
@@ -157,7 +157,6 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	cc.m_time = 0;
 	m_cb = device.createConstantBuffer({ &cc, sizeof(constant) });
 	m_tex = device.createTextureBufferPtr({ &cc, sizeof(constant) });
-	m_vb = device.createVertexBuffer({vertexList, std::size(vertexList), sizeof(Vertex)});
 
 	i32 index_list[] =
 	{
@@ -180,8 +179,6 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 		20,21,22,
 		22,23,20
 	};
-
-	m_ib = device.createIndexBuffer({ index_list , std::size(index_list)});
 }
 
 dx3d::GraphicsEngine::~GraphicsEngine()
@@ -216,10 +213,10 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	auto& tex = *m_tex;
 	context.setTextureBuffer(tex, cc, m_wood_tex);
 
-	auto& vb = *m_vb;
+	auto& vb = *m_mesh->getVertexBuffer();
 	context.setVertexBuffer(vb);
 
-	auto& mb = *m_ib;
+	auto& mb = *m_mesh->getIndexBuffer();
 	context.setIndexBuffer(mb);
 
 	//context.drawTriangleList(vb.getVertexListSize(), 0u); -> DRAWS A TRIANGLE

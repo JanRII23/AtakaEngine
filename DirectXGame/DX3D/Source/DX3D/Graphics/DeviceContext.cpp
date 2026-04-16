@@ -19,7 +19,8 @@ void dx3d::DeviceContext::clearAndSetBackBuffer(const SwapChain& swapChain, cons
 	f32 fColor[] = { color.x, color.y, color.z, color.w };
 	auto rtv = swapChain.m_rtv.Get();
 	m_context->ClearRenderTargetView(swapChain.m_rtv.Get(), fColor);
-	m_context->OMSetRenderTargets(1, &rtv, nullptr);
+	m_context->ClearDepthStencilView(swapChain.m_dsv.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+	m_context->OMSetRenderTargets(1, &rtv, swapChain.m_dsv.Get());
 }
 
 void dx3d::DeviceContext::setGraphicsPipelineState(const GraphicsPipelineState& pipeline)

@@ -48,6 +48,6 @@ VSOutput VSMain(VSInput input)
 
 float4 PSMain(VSOutput input) : SV_Target
 {
-    return Texture.Sample(TextureSampler, input.texcoord);
+    return Texture.Sample(TextureSampler, input.texcoord * 0.5);
     //return lerp(input.color, input.color1, (sin(m_time / 1000.0f) + 1.0f) / 2.0f);
 }

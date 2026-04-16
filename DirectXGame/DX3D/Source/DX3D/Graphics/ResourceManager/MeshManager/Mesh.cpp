@@ -69,10 +69,9 @@ dx3d::Mesh::Mesh(const wchar_t* full_path, GraphicsDevice& device) : Resource(fu
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
 
-	//TODO: this is broken I think
 	device.getVertexMeshLayoutShaderByteCodeAndSize(&shader_byte_code, &size_shader);
 
-	m_vertex_buffer = device.createVertexBuffer({ &list_vertices[0], sizeof(VertexMesh), (UINT)list_vertices.size(), shader_byte_code, (UINT)size_shader });
+	m_vertex_buffer = device.createVertexBuffer({ &list_vertices[0], (UINT)list_vertices.size(), sizeof(VertexMesh), shader_byte_code, (UINT)size_shader });
 
 	m_index_buffer = device.createIndexBuffer({&list_indices[0], (UINT)list_indices.size()});
 }
