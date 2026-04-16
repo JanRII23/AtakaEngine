@@ -23,11 +23,14 @@ namespace dx3d
 		IndexBufferPtr createIndexBuffer(const IndexBufferDesc& desc);
 		TextureBufferPtr createTextureBufferPtr(const TextureBufferDesc& desc);
 		ID3D11Device* getD3DDevice() const noexcept;
+		void getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size);
 
 
 		void executeCommandList(DeviceContext& context);
 	private:
 		GraphicsResourceDesc getGraphicsResourceDesc() const noexcept;
+		void** m_mesh_layout_byte_code;
+		size_t m_mesh_layout_size;
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice{};

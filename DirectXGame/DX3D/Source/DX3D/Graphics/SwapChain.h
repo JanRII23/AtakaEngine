@@ -11,10 +11,11 @@ namespace dx3d
 		Rect getSize() const noexcept;
 		void present(bool vsync = false);
 	private:
-		void reloadBuffers();
+		void reloadBuffers(const SwapChainDesc& desc, const GraphicsResourceDesc& gDesc);
 	private:
 		Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapChain{};
 		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_rtv{};
+		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_dsv{};
 		Rect m_size{};
 
 		friend class DeviceContext;

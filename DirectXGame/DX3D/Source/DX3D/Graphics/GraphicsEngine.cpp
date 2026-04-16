@@ -10,6 +10,7 @@
 #include <fstream>
 #include <DX3D/Core/InputSystem.h>
 #include <DX3D/Math/Matrix4x4.h>
+#include <DX3D/Graphics/ResourceManager/MeshManager/Mesh.h>
 
 using namespace dx3d;
 
@@ -44,6 +45,27 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	auto ps = device.compileShader({ shaderFilePath, shaderSourceCode, shaderSourceCodeSize, "PSMain", ShaderType::PixelShader });
 	auto vsSig = device.createVertexShaderSignature({ vs });
 
+	m_mesh_manager = new MeshManager();
+	if (!m_mesh_manager) DX3DLogThrowError("Failed to create Mesh Manager.");
+
+	void* shader_byte_code = nullptr;
+	size_t size_shader = 0;
+	constexpr char vertexMeshLayoutShaderFilePath[] = "DX3D/Assets/Shaders/VertexMeshLayoutShader.hlsl";
+	std::ifstream vertexMeshLayoutShaderStream(vertexMeshLayoutShaderFilePath);
+
+	if (!vertexMeshLayoutShaderStream) DX3DLogThrowError("Failed to create vertex mesh layout shader file.");
+	std::string vertexMeshLayoutShaderFileData{
+		std::istreambuf_iterator<char>(vertexMeshLayoutShaderStream),
+		std::istreambuf_iterator<char>()
+	};
+
+	auto vertexMeshLayoutShaderSourceCode = vertexMeshLayoutShaderFileData.c_str();
+	auto vertexMeshLayoutShaderSourceCodeSize = vertexMeshLayoutShaderFileData.length();
+
+	auto vm = device.compileShader({ vertexMeshLayoutShaderFilePath, vertexMeshLayoutShaderSourceCode, vertexMeshLayoutShaderSourceCodeSize, "vsmain", ShaderType::VertexMeshLayoutShader });
+	::memcpy(m_mesh_layout_byte_code, shader_byte_code, size_shader);
+	m_mesh_layout_size = size_shader;
+
 	m_pipeline = device.createGraphicsPipelineState({ *vsSig, *ps });
 
 	InputSystem::get()->addListener(this);
@@ -51,11 +73,15 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_tex_manager = new TextureManager();
 	if (!m_tex_manager) DX3DLogThrowError("Failed to create Texture Manager.");
+	
 
-	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/wood.jpg", *m_graphicsDevice);
+	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/brick.png", *m_graphicsDevice);
 
-	m_world_cam.setTranslation(Vector3D(0, 0, -2));
+	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Textures/teapot.obj", *m_graphicsDevice);
 
+	m_world_cam.setTranslation(Vector3D(0, 0, 3));
+
+	//TODO: note the transformation is still needs a bit more refinement before its smooth completely
 	Vec3 position_list[] =
 	{
 		//FRONT
@@ -131,32 +157,28 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	cc.m_time = 0;
 	m_cb = device.createConstantBuffer({ &cc, sizeof(constant) });
 	m_tex = device.createTextureBufferPtr({ &cc, sizeof(constant) });
-	m_vb = device.createVertexBuffer({vertexList, std::size(vertexList), sizeof(Vertex)});
 
-	//TODO: not really sure about the pattern here that is being established, pretty sure this is wrong tho the transformation for the texture kinda broken and not an actual cube
 	i32 index_list[] =
 	{
 		// FRONT
-		0,1,2, 
+		0,1,2,
 		2,3,0,
 		// BACK
-		7,6,5, 
-		5,4,7,
+		4,5,6,
+		6,7,4,
 		// TOP
-		14,13,12, 
-		12,13,14,
+		8,9,10,
+		10,11,8,
 		// BOTTOM
-		21,20,19, 
-		19,20,21,
+		12,13,14,
+		14,15,12,
 		// RIGHT
-		28,27,26, 
-		26,27,28,
+		16,17,18,
+		18,19,16,
 		// LEFT
-		35,34,33, 
-		33,34,35
+		20,21,22,
+		22,23,20
 	};
-
-	m_ib = device.createIndexBuffer({ index_list , std::size(index_list)});
 }
 
 dx3d::GraphicsEngine::~GraphicsEngine()
@@ -191,10 +213,10 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	auto& tex = *m_tex;
 	context.setTextureBuffer(tex, cc, m_wood_tex);
 
-	auto& vb = *m_vb;
+	auto& vb = *m_mesh->getVertexBuffer();
 	context.setVertexBuffer(vb);
 
-	auto& mb = *m_ib;
+	auto& mb = *m_mesh->getIndexBuffer();
 	context.setIndexBuffer(mb);
 
 	//context.drawTriangleList(vb.getVertexListSize(), 0u); -> DRAWS A TRIANGLE
@@ -315,4 +337,9 @@ void dx3d::GraphicsEngine::onRightMouseUp(const Point& mouse_pos)
 TextureManager* dx3d::GraphicsEngine::getTextureManager() noexcept
 {
 	return m_tex_manager;
+}
+
+MeshManager* dx3d::GraphicsEngine::getMeshManager()
+{
+	return m_mesh_manager;
 }

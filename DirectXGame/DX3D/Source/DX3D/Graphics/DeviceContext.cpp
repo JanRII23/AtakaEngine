@@ -19,7 +19,8 @@ void dx3d::DeviceContext::clearAndSetBackBuffer(const SwapChain& swapChain, cons
 	f32 fColor[] = { color.x, color.y, color.z, color.w };
 	auto rtv = swapChain.m_rtv.Get();
 	m_context->ClearRenderTargetView(swapChain.m_rtv.Get(), fColor);
-	m_context->OMSetRenderTargets(1, &rtv, nullptr);
+	m_context->ClearDepthStencilView(swapChain.m_dsv.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+	m_context->OMSetRenderTargets(1, &rtv, swapChain.m_dsv.Get());
 }
 
 void dx3d::DeviceContext::setGraphicsPipelineState(const GraphicsPipelineState& pipeline)
@@ -112,8 +113,6 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 	//cc.m_world *= temp;
 	//NOTE: old setup #2
 
-	cc.m_world.setIdentity();
-
 	Matrix4x4 world_cam;
 	world_cam.setIdentity();
 
@@ -124,6 +123,24 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 	temp.setIdentity();
 	temp.setRotationY(attr.m_rot_y);
 	world_cam *= temp;
+
+	cc.m_world.setIdentity();
+
+	temp.setIdentity();
+	temp.setScaleVector3D(Vector3D(attr.m_scale_cube, attr.m_scale_cube, attr.m_scale_cube));
+	cc.m_world *= temp;
+
+	temp.setIdentity();
+	temp.setRotationY(attr.m_rot_y);
+	cc.m_world *= temp;
+
+	temp.setIdentity();
+	temp.setRotationX(attr.m_rot_x);
+	cc.m_world *= temp;
+
+	temp.setIdentity();
+	temp.setTranslationVector3D(Vector3D(0, 0, 5));
+	cc.m_world *= temp;
 
 	Vector3D new_pos = m_world_cam.getTranslation() + world_cam.getZDirection() * (attr.m_current_forward * 0.3f);
 
