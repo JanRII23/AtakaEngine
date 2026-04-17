@@ -77,8 +77,9 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/brick.png", *m_graphicsDevice);
 
-	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Textures/teapot.obj", *m_graphicsDevice);
+	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/statue.obj", *m_graphicsDevice);
 
+	//TODO: there is still some issue with the field of view on mousemove moving out of frame for the statue.obj
 	m_world_cam.setTranslation(Vector3D(0, 0, 3));
 
 	//TODO: note the transformation is still needs a bit more refinement before its smooth completely
