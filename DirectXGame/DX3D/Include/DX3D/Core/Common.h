@@ -126,6 +126,6 @@ namespace dx3d
 		Matrix4x4 m_world;
 		Matrix4x4 m_view;
 		Matrix4x4 m_proj;
-		ULONGLONG m_time = 0;
+		Vector4D m_light_direction;
 	};
 }

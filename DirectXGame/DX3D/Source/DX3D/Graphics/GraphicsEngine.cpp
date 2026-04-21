@@ -155,7 +155,6 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	//};
 	
 	constant cc;
-	cc.m_time = 0;
 	m_cb = device.createConstantBuffer({ &cc, sizeof(constant) });
 	m_tex = device.createTextureBufferPtr({ &cc, sizeof(constant) });
 

@@ -87,9 +87,14 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 {
 	constant cc;
 	//RECT rc{ 0, 0, size.width, size.height };
-	Matrix4x4 temp;
 
-	cc.m_time = ::GetTickCount64();
+	Matrix4x4 temp;
+	Matrix4x4 m_light_rot_matrix;
+	m_light_rot_matrix.setIdentity();
+	m_light_rot_matrix.setRotationY(0.0f);
+
+	cc.m_light_direction = m_light_rot_matrix.getZDirection();
+
 	//cc.m_world.setScaleVector3D(Vector3D::lerp(Vector3D(0.5, 0.5, 0), Vector3D(1.0f, 1.0f, 0), (sin(m_delta_scale) + 1.0f) / 2.0f));
 	//temp.setTranslationVector3D(Vector3D::lerp(Vector3D(-1.5f, -1.5f, 0), Vector3D(1.5f, 1.5, 0), m_delta_pos));
 
