@@ -48,7 +48,6 @@ VSOutput VSMain(VSInput input)
 
 float4 PSMain(VSOutput input) : SV_Target
 {
-    //TODO: there is some issue with the lighting tho
     float ka = 0.2;
     float3 ia = float3(1.0, 1.0, 1.0);
     
@@ -62,7 +61,7 @@ float4 PSMain(VSOutput input) : SV_Target
     
     float3 final_light = ambient_light + diffuse_light;
     
-    return float4(ambient_light, 1.0);
+    return float4(final_light, 1.0);
     
     //return Texture.Sample(TextureSampler, input.texcoord * 0.5);
     //return lerp(input.color, input.color1, (sin(m_time / 1000.0f) + 1.0f) / 2.0f);

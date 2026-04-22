@@ -267,7 +267,7 @@ void dx3d::GraphicsEngine::onKeyDown(int key)
 	switch (key) {
 	case ('W'): 
 		//m_rot_x += 3.14f * m_delta_time; 
-		m_forward = 3.0f;
+		m_forward = 5.0f;
 		break;
 	case ('S'): 
 		//m_rot_x -= 3.14f * m_delta_time; 
@@ -275,11 +275,11 @@ void dx3d::GraphicsEngine::onKeyDown(int key)
 		break;
 	case('A'): 
 		//m_rot_y += 3.14f * m_delta_time; 
-		m_rightward = 5.0f;
+		m_rightward = 8.0f;
 		break;
 	case('D'): 
 		//m_rot_y -= 3.14f * m_delta_time; 
-		m_rightward = -5.0f;
+		m_rightward = -8.0f;
 		break;
 	default: break;
 	}
