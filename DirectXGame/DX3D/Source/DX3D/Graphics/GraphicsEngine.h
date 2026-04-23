@@ -37,6 +37,9 @@ namespace dx3d
 		void onRightMouseDown(const Point& mouse_pos) override;
 		void onRightMouseUp(const Point& mouse_pos) override;
 
+		void onMiddleMouseDown(const Point& mouse_pos) override;
+		void onMiddleMouseUp(const Point& mouse_pos) override;
+
 		TextureManager* getTextureManager() noexcept;
 		MeshManager* getMeshManager();
 
@@ -74,11 +77,16 @@ namespace dx3d
 		f32 m_rot_x = 0.0f;
 		f32 m_rot_y = 0.0f;
 
+		f32 m_light_rot_y = 0.0f;
+
 		f32 m_scale_cube = 1;
 		f32 m_forward = 0.0f;
 		f32 m_current_forward = 0.0f;
 		f32 m_rightward = 0.0f;
 		f32 m_current_rightward = 0.0f;
+
+		bool m_middle_mouse_down = false;
+		bool m_auto_rotate = false;
 
 		Matrix4x4 m_world_cam;
 	};

@@ -27,6 +27,9 @@ namespace dx3d
 		virtual void onRightMouseDown(const Point& mouse_pos) = 0;
 		virtual void onRightMouseUp(const Point& mouse_pos) = 0;
 
+		virtual void onMiddleMouseDown(const Point& mouse_pos) = 0;
+		virtual void onMiddleMouseUp(const Point& mouse_pos) = 0;
+
 		InputListener* getInputListener() const
 		{
 			return m_listener;

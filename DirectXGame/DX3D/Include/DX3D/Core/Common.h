@@ -112,6 +112,7 @@ namespace dx3d
 		f32 m_current_forward;
 		f32 m_rightward;
 		f32 m_current_rightward;
+		f32 m_light_rot_y;
 	};
 
 	struct GameDesc

@@ -48,7 +48,7 @@ VSOutput VSMain(VSInput input)
 
 float4 PSMain(VSOutput input) : SV_Target
 {
-    float ka = 0.2;
+    float ka = 0.1;
     float3 ia = float3(1.0, 1.0, 1.0);
     
     float3 ambient_light = ka * ia;

@@ -80,6 +80,8 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/statue.obj", *m_graphicsDevice);
 
 	//TODO: there is still some issue with the field of view on mousemove moving out of frame for the statue.obj
+
+	//TODO: ideally needs to be refactored to rotate around the object
 	m_world_cam.setTranslation(Vector3D(0, 0, 3));
 
 	//TODO: note the transformation is still needs a bit more refinement before its smooth completely
@@ -241,6 +243,11 @@ void dx3d::GraphicsEngine::updateTime()
 	m_new_delta = ::GetTickCount64();
 
 	m_delta_time = (m_old_delta) ? ((m_new_delta - m_old_delta) / 1000.0f) : 0;
+
+	if (m_auto_rotate)
+	{
+		m_rot_y += 1.0f * m_delta_time;
+	}
 }
 
 void dx3d::GraphicsEngine::updateTargetPosition()
@@ -308,6 +315,11 @@ void dx3d::GraphicsEngine::onMouseMove(const Point& mouse_pos, const Rect& size)
 
 	constexpr float mouse_sensitivity = 0.0050f;
 
+	//if (m_middle_mouse_down)
+	//{
+	//	
+	//}
+
 	m_rot_x += (mouse_pos.m_y - (height / 2.0f)) * mouse_sensitivity * 0.1f;
 	m_rot_y += (mouse_pos.m_x - (width / 2.0f)) * mouse_sensitivity * 0.1f;
 
@@ -332,6 +344,18 @@ void dx3d::GraphicsEngine::onRightMouseDown(const Point& mouse_pos)
 void dx3d::GraphicsEngine::onRightMouseUp(const Point& mouse_pos)
 {
 	m_scale_cube = 1.0f;
+}
+
+void dx3d::GraphicsEngine::onMiddleMouseDown(const Point& mouse_pos)
+{
+	m_middle_mouse_down = true;
+	m_auto_rotate = true;
+}
+
+void dx3d::GraphicsEngine::onMiddleMouseUp(const Point& mouse_pos)
+{
+	m_middle_mouse_down = false;
+	m_auto_rotate = false;
 }
 
 TextureManager* dx3d::GraphicsEngine::getTextureManager() noexcept

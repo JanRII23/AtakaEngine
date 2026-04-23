@@ -63,6 +63,12 @@ void dx3d::InputSystem::update(const Rect& size)
                             (*it)->onRightMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
                         }
                     }
+                    else if (i == VK_MBUTTON)
+                    {
+                        if (m_keys_state[i] != m_old_keys_state[i]) {
+                            (*it)->onMiddleMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
+                        }
+                    }
                     else 
                     {
                         (*it)->onKeyDown(i);
@@ -84,6 +90,9 @@ void dx3d::InputSystem::update(const Rect& size)
                         }
                         else if (i == VK_RBUTTON) {
                             (*it)->onRightMouseUp(Point(current_mouse_pos.x, current_mouse_pos.y));
+                        }
+                        else if (i == VK_MBUTTON) {
+                            (*it)->onMiddleMouseUp(Point(current_mouse_pos.x, current_mouse_pos.y));
                         }
                         else {
                             (*it)->onKeyUp(i);

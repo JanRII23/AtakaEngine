@@ -91,7 +91,9 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 	Matrix4x4 temp;
 	Matrix4x4 m_light_rot_matrix;
 	m_light_rot_matrix.setIdentity();
-	m_light_rot_matrix.setRotationY(0.0f);
+	m_light_rot_matrix.setRotationY(attr.m_light_rot_y);
+
+	//m_light_rot_y += 0.707f * attr.m_
 
 	cc.m_light_direction = m_light_rot_matrix.getZDirection();
 
