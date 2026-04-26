@@ -79,7 +79,7 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/statue.obj", *m_graphicsDevice);
 
-	//TODO: there is still some issue with the field of view on mousemove moving out of frame for the statue.obj
+	//TODO: there is still some issue with the field of view on mousemove moving out of frame for the statue.obj (need a way to where it actually rotates around the object)
 
 	//TODO: ideally needs to be refactored to rotate around the object
 	m_world_cam.setTranslation(Vector3D(0, 0, 3));
@@ -202,12 +202,15 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
-	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward };
+	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward, m_light_rot_y };
 
 	attr.m_current_forward = m_current_forward;
 	attr.m_current_rightward = m_current_rightward;
+	
+	auto cc = context.update(attr, m_world_cam, m_delta_time);
 
-	auto cc = context.update(attr, m_world_cam);
+	// Update light rotation for next frame
+	m_light_rot_y = attr.m_light_rot_y;
 
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);

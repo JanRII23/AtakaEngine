@@ -83,7 +83,7 @@ void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
 	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
-dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_world_cam) const noexcept
+dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_world_cam, f32 delta_time) const noexcept
 {
 	constant cc;
 	//RECT rc{ 0, 0, size.width, size.height };
@@ -93,7 +93,7 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 	m_light_rot_matrix.setIdentity();
 	m_light_rot_matrix.setRotationY(attr.m_light_rot_y);
 
-	//m_light_rot_y += 0.707f * attr.m_
+	attr.m_light_rot_y += 0.707f * delta_time;
 
 	cc.m_light_direction = m_light_rot_matrix.getZDirection();
 
