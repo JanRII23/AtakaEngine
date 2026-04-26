@@ -32,6 +32,7 @@ void dx3d::Game::onInternalUpdate()
 {
 	m_graphicsEngine->updateTime();
 	m_graphicsEngine->updateTargetPosition();
+	m_graphicsEngine->updateLightPosition();
 	m_graphicsEngine->render(m_display->getSwapChain());
 }
 

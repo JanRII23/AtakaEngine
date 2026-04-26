@@ -91,9 +91,7 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 	Matrix4x4 temp;
 	Matrix4x4 m_light_rot_matrix;
 	m_light_rot_matrix.setIdentity();
-	m_light_rot_matrix.setRotationY(attr.m_light_rot_y);
-
-	attr.m_light_rot_y += 0.707f * delta_time;
+	m_light_rot_matrix.setRotationY(attr.m_current_light_rot_y);
 
 	cc.m_light_direction = m_light_rot_matrix.getZDirection();
 
@@ -154,6 +152,8 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 	new_pos = new_pos + world_cam.getXDirection() * (attr.m_current_rightward * 0.3f); 
 
 	world_cam.setTranslation(new_pos);
+
+	cc.m_camera_position = new_pos;
 
 	m_world_cam = world_cam;
 

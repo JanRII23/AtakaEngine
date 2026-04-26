@@ -23,6 +23,7 @@ namespace dx3d
 		void render(SwapChain& swapChain);
 		void updateTime();
 		void updateTargetPosition();
+		void updateLightPosition();
 		void onFocus() override;
 		void onKillFocus() override;
 
@@ -78,6 +79,7 @@ namespace dx3d
 		f32 m_rot_y = 0.0f;
 
 		f32 m_light_rot_y = 0.0f;
+		f32 m_current_light_rot_y = 0.0f;
 
 		f32 m_scale_cube = 1;
 		f32 m_forward = 0.0f;

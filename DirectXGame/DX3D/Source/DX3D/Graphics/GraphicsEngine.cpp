@@ -202,15 +202,13 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
-	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward, m_light_rot_y };
+	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward, m_current_light_rot_y };
 
 	attr.m_current_forward = m_current_forward;
 	attr.m_current_rightward = m_current_rightward;
+	attr.m_current_light_rot_y = m_current_light_rot_y;
 	
 	auto cc = context.update(attr, m_world_cam, m_delta_time);
-
-	// Update light rotation for next frame
-	m_light_rot_y = attr.m_light_rot_y;
 
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);
@@ -260,6 +258,11 @@ void dx3d::GraphicsEngine::updateTargetPosition()
 	m_current_forward += (m_forward - m_current_forward) * move_acceleration * m_delta_time;
 
 	m_current_rightward += (m_rightward - m_current_rightward) * move_acceleration * m_delta_time;
+}
+
+void dx3d::GraphicsEngine::updateLightPosition()
+{
+	m_current_light_rot_y += 0.707f * m_delta_time;
 }
 
 void dx3d::GraphicsEngine::onFocus()
