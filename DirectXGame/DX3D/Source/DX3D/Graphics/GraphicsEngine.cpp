@@ -77,8 +77,11 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/brick.png", *m_graphicsDevice);
 
-	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Textures/teapot.obj", *m_graphicsDevice);
+	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/statue.obj", *m_graphicsDevice);
 
+	//TODO: there is still some issue with the field of view on mousemove moving out of frame for the statue.obj (need a way to where it actually rotates around the object)
+
+	//TODO: ideally needs to be refactored to rotate around the object
 	m_world_cam.setTranslation(Vector3D(0, 0, 3));
 
 	//TODO: note the transformation is still needs a bit more refinement before its smooth completely
@@ -154,7 +157,6 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	//};
 	
 	constant cc;
-	cc.m_time = 0;
 	m_cb = device.createConstantBuffer({ &cc, sizeof(constant) });
 	m_tex = device.createTextureBufferPtr({ &cc, sizeof(constant) });
 
@@ -200,12 +202,13 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
-	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward };
+	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward, m_current_light_rot_y };
 
 	attr.m_current_forward = m_current_forward;
 	attr.m_current_rightward = m_current_rightward;
-
-	auto cc = context.update(attr, m_world_cam);
+	attr.m_current_light_rot_y = m_current_light_rot_y;
+	
+	auto cc = context.update(attr, m_world_cam, m_delta_time);
 
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);
@@ -241,6 +244,11 @@ void dx3d::GraphicsEngine::updateTime()
 	m_new_delta = ::GetTickCount64();
 
 	m_delta_time = (m_old_delta) ? ((m_new_delta - m_old_delta) / 1000.0f) : 0;
+
+	if (m_auto_rotate)
+	{
+		m_rot_y += 1.0f * m_delta_time;
+	}
 }
 
 void dx3d::GraphicsEngine::updateTargetPosition()
@@ -250,6 +258,11 @@ void dx3d::GraphicsEngine::updateTargetPosition()
 	m_current_forward += (m_forward - m_current_forward) * move_acceleration * m_delta_time;
 
 	m_current_rightward += (m_rightward - m_current_rightward) * move_acceleration * m_delta_time;
+}
+
+void dx3d::GraphicsEngine::updateLightPosition()
+{
+	m_current_light_rot_y += 0.707f * m_delta_time;
 }
 
 void dx3d::GraphicsEngine::onFocus()
@@ -267,7 +280,7 @@ void dx3d::GraphicsEngine::onKeyDown(int key)
 	switch (key) {
 	case ('W'): 
 		//m_rot_x += 3.14f * m_delta_time; 
-		m_forward = 3.0f;
+		m_forward = 5.0f;
 		break;
 	case ('S'): 
 		//m_rot_x -= 3.14f * m_delta_time; 
@@ -275,11 +288,11 @@ void dx3d::GraphicsEngine::onKeyDown(int key)
 		break;
 	case('A'): 
 		//m_rot_y += 3.14f * m_delta_time; 
-		m_rightward = 5.0f;
+		m_rightward = 8.0f;
 		break;
 	case('D'): 
 		//m_rot_y -= 3.14f * m_delta_time; 
-		m_rightward = -5.0f;
+		m_rightward = -8.0f;
 		break;
 	default: break;
 	}
@@ -308,6 +321,11 @@ void dx3d::GraphicsEngine::onMouseMove(const Point& mouse_pos, const Rect& size)
 
 	constexpr float mouse_sensitivity = 0.0050f;
 
+	//if (m_middle_mouse_down)
+	//{
+	//	
+	//}
+
 	m_rot_x += (mouse_pos.m_y - (height / 2.0f)) * mouse_sensitivity * 0.1f;
 	m_rot_y += (mouse_pos.m_x - (width / 2.0f)) * mouse_sensitivity * 0.1f;
 
@@ -332,6 +350,18 @@ void dx3d::GraphicsEngine::onRightMouseDown(const Point& mouse_pos)
 void dx3d::GraphicsEngine::onRightMouseUp(const Point& mouse_pos)
 {
 	m_scale_cube = 1.0f;
+}
+
+void dx3d::GraphicsEngine::onMiddleMouseDown(const Point& mouse_pos)
+{
+	m_middle_mouse_down = true;
+	m_auto_rotate = true;
+}
+
+void dx3d::GraphicsEngine::onMiddleMouseUp(const Point& mouse_pos)
+{
+	m_middle_mouse_down = false;
+	m_auto_rotate = false;
 }
 
 TextureManager* dx3d::GraphicsEngine::getTextureManager() noexcept
