@@ -44,7 +44,8 @@ namespace dx3d
 	{
 		VertexShader = 0,
 		PixelShader,
-		VertexMeshLayoutShader
+		VertexMeshLayoutShader,
+		SkyBoxShader
 	};
 
 	struct ShaderCompileDesc

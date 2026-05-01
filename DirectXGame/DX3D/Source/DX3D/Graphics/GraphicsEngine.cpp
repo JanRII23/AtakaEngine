@@ -45,6 +45,9 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	auto ps = device.compileShader({ shaderFilePath, shaderSourceCode, shaderSourceCodeSize, "PSMain", ShaderType::PixelShader });
 	auto vsSig = device.createVertexShaderSignature({ vs });
 
+	auto m_sky_ps = compileShaderType("DX3D/Assets/Shaders/SkyBoxShader.hlsl", device,
+		"psmain", ShaderType::SkyBoxShader);
+
 	m_mesh_manager = new MeshManager();
 	if (!m_mesh_manager) DX3DLogThrowError("Failed to create Mesh Manager.");
 
@@ -68,6 +71,8 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_pipeline = device.createGraphicsPipelineState({ *vsSig, *ps });
 
+	m_sky_pipeline = device.createGraphicsPipelineState({ *vsSig, *m_sky_ps });
+
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
 
@@ -76,6 +81,8 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	
 
 	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/brick.png", *m_graphicsDevice);
+
+	m_sky_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/sky.jpg", *m_graphicsDevice);
 
 	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/suzanne.obj", *m_graphicsDevice);
 
@@ -200,7 +207,6 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 
 	auto& context = *m_deviceContext;
 	context.clearAndSetBackBuffer(swapChain, { 0.27f, 0.39f, 0.55f, 1.0f });
-	context.setGraphicsPipelineState(*m_pipeline);
 	
 	context.setViewportSize(swapChain.getSize());
 
@@ -212,8 +218,16 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	auto cc = context.update(attr, m_world_cam, m_delta_time);
 
-	drawMesh(cc, context);
+	//RENDER MODEL
+	context.setGraphicsPipelineState(*m_pipeline);
+	drawMesh(m_mesh, cc, context, m_wood_tex);
 
+	//RENDER SKYBOX/SPHERE
+	context.setGraphicsPipelineState(*m_sky_pipeline);
+	drawMesh(m_sky_mesh, cc, context, m_sky_tex);
+
+	auto& device = *m_graphicsDevice;
+	device.executeCommandList(context);
 	swapChain.present();
 }
 
@@ -361,22 +375,41 @@ MeshManager* dx3d::GraphicsEngine::getMeshManager()
 	return m_mesh_manager;
 }
 
-void dx3d::GraphicsEngine::drawMesh(auto cc, DeviceContext& context)
+void dx3d::GraphicsEngine::drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, const TexturePtr& texType)
 {
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);
 
 	auto& tex = *m_tex;
-	context.setTextureBuffer(tex, cc, m_wood_tex);
+	context.setTextureBuffer(tex, cc, texType);
 
-	auto& vb = *m_mesh->getVertexBuffer();
+	auto& vb = *mesh->getVertexBuffer();
 	context.setVertexBuffer(vb);
 
-	auto& mb = *m_mesh->getIndexBuffer();
+	auto& mb = *mesh->getIndexBuffer();
 	context.setIndexBuffer(mb);
 
 	context.drawIndexedTriangleList(mb.getSizeIndexList(), 0u, 0u);
+}
 
-	auto& device = *m_graphicsDevice;
-	device.executeCommandList(context);
+void dx3d::GraphicsEngine::updateCamera()
+{
+	//TODO: the camera is actually in the deviceContext.cpp
+}
+
+ShaderBinaryPtr dx3d::GraphicsEngine::compileShaderType(const char* shaderFilePath, GraphicsDevice& device, const char* shaderEntryPoint, ShaderType shaderType)
+{
+	std::ifstream shaderStream(shaderFilePath);
+
+	if (!shaderStream) DX3DLogThrowError("Failed to open shader file.");
+
+	std::string shaderFileData{
+		std::istreambuf_iterator<char>(shaderStream),
+		std::istreambuf_iterator<char>()
+	};
+
+	auto shaderSourceCode = shaderFileData.c_str();
+	auto shaderSourceCodeSize = shaderFileData.length();
+
+	return device.compileShader({ shaderFilePath, shaderSourceCode, shaderSourceCodeSize, shaderEntryPoint, shaderType });
 }

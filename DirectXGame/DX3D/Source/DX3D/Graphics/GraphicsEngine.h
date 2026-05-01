@@ -44,7 +44,10 @@ namespace dx3d
 		TextureManager* getTextureManager() noexcept;
 		MeshManager* getMeshManager();
 
-		void drawMesh(auto cc, DeviceContext& context);
+		void drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, const TexturePtr& texType);
+		void updateCamera();
+
+		ShaderBinaryPtr compileShaderType(const char* shaderFilePath, GraphicsDevice& device, const char* shaderEntryPoint, ShaderType shaderType);
 
 	private:
 		struct Vertex
@@ -58,12 +61,14 @@ namespace dx3d
 		std::shared_ptr<GraphicsDevice> m_graphicsDevice{};
 		DeviceContextPtr m_deviceContext{};
 		GraphicsPipelineStatePtr m_pipeline{};
+		GraphicsPipelineStatePtr m_sky_pipeline{};
 		VertexBufferPtr m_vb{};
 		ConstantBufferPtr m_cb{};
 		IndexBufferPtr m_ib{};
 		TextureManager * m_tex_manager = nullptr;
 		TextureBufferPtr m_tex{};
 		TexturePtr m_wood_tex;
+		TexturePtr m_sky_tex;
 		MeshManager* m_mesh_manager = nullptr;
 		MeshPtr m_mesh;
 		MeshPtr m_sky_mesh;
