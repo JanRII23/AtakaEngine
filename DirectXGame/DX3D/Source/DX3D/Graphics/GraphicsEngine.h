@@ -44,6 +44,8 @@ namespace dx3d
 		TextureManager* getTextureManager() noexcept;
 		MeshManager* getMeshManager();
 
+		void drawMesh(auto cc, DeviceContext& context);
+
 	private:
 		struct Vertex
 		{
@@ -64,6 +66,7 @@ namespace dx3d
 		TexturePtr m_wood_tex;
 		MeshManager* m_mesh_manager = nullptr;
 		MeshPtr m_mesh;
+		MeshPtr m_sky_mesh;
 
 		unsigned char m_mesh_layout_byte_code[1024];
 		size_t m_mesh_layout_size = 0;

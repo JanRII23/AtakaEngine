@@ -77,7 +77,9 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/brick.png", *m_graphicsDevice);
 
-	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/statue.obj", *m_graphicsDevice);
+	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/suzanne.obj", *m_graphicsDevice);
+
+	m_sky_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/sphere.obj", *m_graphicsDevice);
 
 	//TODO: there is still some issue with the field of view on mousemove moving out of frame for the statue.obj (need a way to where it actually rotates around the object)
 
@@ -210,23 +212,8 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	auto cc = context.update(attr, m_world_cam, m_delta_time);
 
-	auto& cb = *m_cb;
-	context.setConstantBuffer(cb, cc);
+	drawMesh(cc, context);
 
-	auto& tex = *m_tex;
-	context.setTextureBuffer(tex, cc, m_wood_tex);
-
-	auto& vb = *m_mesh->getVertexBuffer();
-	context.setVertexBuffer(vb);
-
-	auto& mb = *m_mesh->getIndexBuffer();
-	context.setIndexBuffer(mb);
-
-	//context.drawTriangleList(vb.getVertexListSize(), 0u); -> DRAWS A TRIANGLE
-	context.drawIndexedTriangleList(mb.getSizeIndexList(), 0u, 0u);
-
-	auto& device = *m_graphicsDevice;
-	device.executeCommandList(context);
 	swapChain.present();
 }
 
@@ -372,4 +359,24 @@ TextureManager* dx3d::GraphicsEngine::getTextureManager() noexcept
 MeshManager* dx3d::GraphicsEngine::getMeshManager()
 {
 	return m_mesh_manager;
+}
+
+void dx3d::GraphicsEngine::drawMesh(auto cc, DeviceContext& context)
+{
+	auto& cb = *m_cb;
+	context.setConstantBuffer(cb, cc);
+
+	auto& tex = *m_tex;
+	context.setTextureBuffer(tex, cc, m_wood_tex);
+
+	auto& vb = *m_mesh->getVertexBuffer();
+	context.setVertexBuffer(vb);
+
+	auto& mb = *m_mesh->getIndexBuffer();
+	context.setIndexBuffer(mb);
+
+	context.drawIndexedTriangleList(mb.getSizeIndexList(), 0u, 0u);
+
+	auto& device = *m_graphicsDevice;
+	device.executeCommandList(context);
 }
