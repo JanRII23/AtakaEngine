@@ -19,7 +19,9 @@ namespace dx3d
 		void setConstantBuffer(const ConstantBuffer& buffer, constant cc);
 		void setTextureBuffer(const TextureBuffer& buffer, constant cc, TexturePtr texture);
 		void setIndexBuffer(const IndexBuffer& buffer);
-		constant update(QuadPositionAttr attr, Matrix4x4 m_world_cam, f32 delta_time) const noexcept;
+		constant update(QuadPositionAttr attr, MatrixCams cameras) noexcept;
+		void updateCamera(constant& cc, const QuadPositionAttr attr, MatrixCams cameras);
+		void updateModel(constant& cc, QuadPositionAttr attr, MatrixCams cameras);
 	private:
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_context{};
 

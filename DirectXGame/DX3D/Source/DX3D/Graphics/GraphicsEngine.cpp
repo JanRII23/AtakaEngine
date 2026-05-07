@@ -88,9 +88,6 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_sky_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/sphere.obj", *m_graphicsDevice);
 
-	//TODO: there is still some issue with the field of view on mousemove moving out of frame for the statue.obj (need a way to where it actually rotates around the object)
-
-	//TODO: ideally needs to be refactored to rotate around the object
 	m_world_cam.setTranslation(Vector3D(0, 0, 3));
 
 	//TODO: note the transformation is still needs a bit more refinement before its smooth completely
@@ -212,11 +209,17 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 
 	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward, m_current_light_rot_y };
 
+	MatrixCams cameras = {
+		m_world_cam,
+		m_world_cam,
+		m_world_cam
+	};
+
 	attr.m_current_forward = m_current_forward;
 	attr.m_current_rightward = m_current_rightward;
 	attr.m_current_light_rot_y = m_current_light_rot_y;
 	
-	auto cc = context.update(attr, m_world_cam, m_delta_time);
+	auto cc = context.update(attr, cameras);
 
 	//RENDER MODEL
 	context.setGraphicsPipelineState(*m_pipeline);
@@ -390,11 +393,6 @@ void dx3d::GraphicsEngine::drawMesh(const MeshPtr& mesh, auto cc, DeviceContext&
 	context.setIndexBuffer(mb);
 
 	context.drawIndexedTriangleList(mb.getSizeIndexList(), 0u, 0u);
-}
-
-void dx3d::GraphicsEngine::updateCamera()
-{
-	//TODO: the camera is actually in the deviceContext.cpp
 }
 
 ShaderBinaryPtr dx3d::GraphicsEngine::compileShaderType(const char* shaderFilePath, GraphicsDevice& device, const char* shaderEntryPoint, ShaderType shaderType)

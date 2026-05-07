@@ -45,7 +45,6 @@ namespace dx3d
 		MeshManager* getMeshManager();
 
 		void drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, const TexturePtr& texType);
-		void updateCamera();
 
 		ShaderBinaryPtr compileShaderType(const char* shaderFilePath, GraphicsDevice& device, const char* shaderEntryPoint, ShaderType shaderType);
 
@@ -99,6 +98,8 @@ namespace dx3d
 		bool m_auto_rotate = false;
 
 		Matrix4x4 m_world_cam;
+		Matrix4x4 m_view_cam;
+		Matrix4x4 m_proj_cam;
 	};
 }
 
