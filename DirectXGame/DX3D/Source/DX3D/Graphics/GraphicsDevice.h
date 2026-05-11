@@ -24,7 +24,7 @@ namespace dx3d
 		TextureBufferPtr createTextureBufferPtr(const TextureBufferDesc& desc);
 		ID3D11Device* getD3DDevice() const noexcept;
 		void getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size);
-
+		void initRasterizerState();
 
 		void executeCommandList(DeviceContext& context);
 	private:

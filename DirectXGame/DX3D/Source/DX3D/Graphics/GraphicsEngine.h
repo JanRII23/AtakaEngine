@@ -63,6 +63,7 @@ namespace dx3d
 		GraphicsPipelineStatePtr m_sky_pipeline{};
 		VertexBufferPtr m_vb{};
 		ConstantBufferPtr m_cb{};
+		ConstantBufferPtr m_sky_cb{};
 		IndexBufferPtr m_ib{};
 		TextureManager * m_tex_manager = nullptr;
 		TextureBufferPtr m_tex{};

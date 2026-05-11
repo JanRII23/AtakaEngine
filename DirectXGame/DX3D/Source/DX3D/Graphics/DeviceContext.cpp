@@ -83,7 +83,7 @@ void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
 	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
-dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, MatrixCams cameras) noexcept
+dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, MatrixCams& cameras) noexcept
 {
 	constant cc;
 
@@ -93,7 +93,7 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, MatrixCams cam
 	return cc;
 }
 
-void dx3d::DeviceContext::updateCamera(constant& cc, QuadPositionAttr attr, MatrixCams cameras)
+void dx3d::DeviceContext::updateCamera(constant& cc, QuadPositionAttr attr, MatrixCams& cameras)
 {
 	Matrix4x4 world_cam, temp;
 	world_cam.setIdentity();
@@ -146,7 +146,7 @@ void dx3d::DeviceContext::updateCamera(constant& cc, QuadPositionAttr attr, Matr
 	cameras.m_proj_cam.setPerspectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.0f);
 }
 
-void dx3d::DeviceContext::updateModel(constant& cc, QuadPositionAttr attr, MatrixCams cameras)
+void dx3d::DeviceContext::updateModel(constant& cc, QuadPositionAttr attr, MatrixCams& cameras)
 {
 	Matrix4x4 m_light_rot_matrix;
 	m_light_rot_matrix.setIdentity();
@@ -156,4 +156,17 @@ void dx3d::DeviceContext::updateModel(constant& cc, QuadPositionAttr attr, Matri
 	cc.m_proj = cameras.m_proj_cam;
 	cc.m_camera_position = cameras.m_world_cam.getTranslation();
 	cc.m_light_direction = m_light_rot_matrix.getZDirection();
+}
+
+dx3d::constant dx3d::DeviceContext::updateSkyBox(QuadPositionAttr attr, MatrixCams& cameras) noexcept
+{
+	//TODO: I think this setup here is wrong for calling the skybox rendering??
+	constant cc;
+
+	cc.m_world.setIdentity();
+	cc.m_world.setScale(Vector3D(10.0f, 10.0f, 10.0f));
+	cc.m_view = cameras.m_view_cam;
+	cc.m_proj = cameras.m_proj_cam;
+
+	return cc;
 }

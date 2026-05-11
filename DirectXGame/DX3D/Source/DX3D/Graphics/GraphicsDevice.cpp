@@ -95,6 +95,11 @@ void dx3d::GraphicsDevice::getVertexMeshLayoutShaderByteCodeAndSize(void** byte_
 	*size = m_mesh_layout_size;
 }
 
+void dx3d::GraphicsDevice::initRasterizerState()
+{
+
+}
+
 void dx3d::GraphicsDevice::executeCommandList(DeviceContext& context)
 {
 	Microsoft::WRL::ComPtr<ID3D11CommandList> list{};
