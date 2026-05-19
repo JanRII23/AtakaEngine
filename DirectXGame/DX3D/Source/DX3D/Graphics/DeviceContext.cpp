@@ -124,7 +124,6 @@ void dx3d::DeviceContext::updateCamera(constant& cc, QuadPositionAttr attr, Matr
 	temp.setTranslationVector3D(Vector3D(0, 0, 5));
 	cc.m_world *= temp;
 
-
 	Vector3D new_pos = cameras.m_world_cam.getTranslation() + world_cam.getZDirection() * (attr.m_current_forward * 0.3f);
 
 	new_pos = new_pos + world_cam.getXDirection() * (attr.m_current_rightward * 0.3f);

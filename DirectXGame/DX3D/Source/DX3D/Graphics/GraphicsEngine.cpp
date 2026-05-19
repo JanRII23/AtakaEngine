@@ -220,19 +220,23 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	attr.m_current_rightward = m_current_rightward;
 	attr.m_current_light_rot_y = m_current_light_rot_y;
 	
+	//TODO: need more fixing on the rasterized state or something
+	auto& device = *m_graphicsDevice;
+
 	// COMPUTE TRANSORMATION MATRICES
 	auto cc = context.update(attr, cameras);
+	auto cc_sky = context.updateSkyBox(attr, cameras);
 
 	//RENDER MODEL
+	device.setRasterizerState(false);
 	context.setGraphicsPipelineState(*m_pipeline);
 	drawMesh(m_mesh, cc, context, m_wood_tex);
 
 	//RENDER SKYBOX/SPHERE
-	auto cc_sky = context.updateSkyBox(attr, cameras);
+	device.setRasterizerState(true);
 	context.setGraphicsPipelineState(*m_sky_pipeline);
 	drawMesh(m_sky_mesh, cc_sky, context, m_sky_tex);
 
-	auto& device = *m_graphicsDevice;
 	device.executeCommandList(context);
 	swapChain.present();
 }
