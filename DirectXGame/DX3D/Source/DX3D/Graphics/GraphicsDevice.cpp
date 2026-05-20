@@ -32,8 +32,6 @@ dx3d::GraphicsDevice::GraphicsDevice(const GraphicsDeviceDesc& desc): Base(desc.
 
 	DX3DGraphicsLogThrowOnFail(m_dxgiAdapter->GetParent(IID_PPV_ARGS(&m_dxgiFactory)),
 		"GetParent Failed to retrieve IDXGIFactory.");
-
-	initRasterizerState();
 }
 
 dx3d::GraphicsDevice::~GraphicsDevice()
@@ -95,27 +93,6 @@ void dx3d::GraphicsDevice::getVertexMeshLayoutShaderByteCodeAndSize(void** byte_
 {
 	*byte_code = m_mesh_layout_byte_code;
 	*size = m_mesh_layout_size;
-}
-
-void dx3d::GraphicsDevice::setRasterizerState(bool cull_front)
-{
-	if (cull_front) {
-		m_d3dContext->RSSetState(m_cull_front_state.Get());
-	} else {
-		m_d3dContext->RSSetState(m_cull_back_state.Get());
-	}
-}
-
-void dx3d::GraphicsDevice::initRasterizerState()
-{
-	D3D11_RASTERIZER_DESC desc = {};
-	desc.CullMode = D3D11_CULL_FRONT;
-	desc.DepthClipEnable = true;
-	desc.FillMode = D3D11_FILL_SOLID;
-	m_d3dDevice->CreateRasterizerState(&desc, &m_cull_front_state);
-
-	desc.CullMode = D3D11_CULL_BACK;
-	m_d3dDevice->CreateRasterizerState(&desc, &m_cull_back_state);
 }
 
 void dx3d::GraphicsDevice::executeCommandList(DeviceContext& context)

@@ -12,6 +12,8 @@ dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc): GraphicsR
 {
 	DX3DGraphicsLogThrowOnFail(m_device.CreateDeferredContext(0, &m_context),
 		"CreateDeferredContext Failed.");
+
+	initRasterizerState();
 }
 
 void dx3d::DeviceContext::clearAndSetBackBuffer(const SwapChain& swapChain, const Vec4& color)
@@ -159,13 +161,37 @@ void dx3d::DeviceContext::updateModel(constant& cc, QuadPositionAttr attr, Matri
 
 dx3d::constant dx3d::DeviceContext::updateSkyBox(QuadPositionAttr attr, MatrixCams& cameras) noexcept
 {
-	//TODO: I think this setup here is wrong for calling the skybox rendering??
 	constant cc;
 
 	cc.m_world.setIdentity();
-	cc.m_world.setScale(Vector3D(10.0f, 10.0f, 10.0f));
+	cc.m_world.setScale(Vector3D(100.0f, 100.0f, 100.0f));
+	cc.m_world.setTranslation(cameras.m_world_cam.getTranslation());
 	cc.m_view = cameras.m_view_cam;
 	cc.m_proj = cameras.m_proj_cam;
 
 	return cc;
+}
+
+void dx3d::DeviceContext::setRasterizerState(bool cull_front)
+{
+	if (cull_front) {
+		m_context->RSSetState(m_cull_front_state.Get());
+	} else {
+		m_context->RSSetState(m_cull_back_state.Get());
+	}
+}
+
+void dx3d::DeviceContext::initRasterizerState()
+{
+	D3D11_RASTERIZER_DESC desc = {};
+	desc.CullMode = D3D11_CULL_FRONT;
+	desc.DepthClipEnable = true;
+
+	desc.FillMode = D3D11_FILL_SOLID;
+	DX3DGraphicsLogThrowOnFail(m_device.CreateRasterizerState(&desc, &m_cull_front_state),
+		"CreateRasterizerState CULL_FRONT Failed.");
+
+	desc.CullMode = D3D11_CULL_BACK;
+	DX3DGraphicsLogThrowOnFail(m_device.CreateRasterizerState(&desc, &m_cull_back_state),
+		"CreateRasterizerState CULL_BACK Failed.");
 }

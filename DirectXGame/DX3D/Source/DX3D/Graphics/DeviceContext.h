@@ -19,12 +19,16 @@ namespace dx3d
 		void setConstantBuffer(const ConstantBuffer& buffer, constant cc);
 		void setTextureBuffer(const TextureBuffer& buffer, constant cc, TexturePtr texture);
 		void setIndexBuffer(const IndexBuffer& buffer);
+		void setRasterizerState(bool cull_front);
 		constant update(QuadPositionAttr attr, MatrixCams& cameras) noexcept;
 		void updateCamera(constant& cc, const QuadPositionAttr attr, MatrixCams& cameras);
 		void updateModel(constant& cc, QuadPositionAttr attr, MatrixCams& cameras);
 		constant updateSkyBox(QuadPositionAttr attr, MatrixCams& cameras) noexcept;
 	private:
+		void initRasterizerState();
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_context{};
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_cull_front_state = nullptr;
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_cull_back_state = nullptr;
 
 		friend class GraphicsDevice;
 	};

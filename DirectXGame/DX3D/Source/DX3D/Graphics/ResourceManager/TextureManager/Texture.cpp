@@ -6,7 +6,7 @@
 dx3d::Texture::Texture(const wchar_t* full_path, GraphicsDevice& device): Resource(full_path)
 {
 	DirectX::ScratchImage image_data;
-	HRESULT res = DirectX::LoadFromWICFile(full_path, DirectX::WIC_FLAGS_NONE, nullptr, image_data);
+	HRESULT res = DirectX::LoadFromWICFile(full_path, DirectX::WIC_FLAGS_IGNORE_SRGB, nullptr, image_data);
 
 	m_device = device.getD3DDevice();
 

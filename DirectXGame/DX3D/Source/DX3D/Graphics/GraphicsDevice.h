@@ -24,14 +24,12 @@ namespace dx3d
 		TextureBufferPtr createTextureBufferPtr(const TextureBufferDesc& desc);
 		ID3D11Device* getD3DDevice() const noexcept;
 		void getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size);
-		void setRasterizerState(bool cull_front);
 
 		void executeCommandList(DeviceContext& context);
 	private:
 		GraphicsResourceDesc getGraphicsResourceDesc() const noexcept;
 		void** m_mesh_layout_byte_code;
 		size_t m_mesh_layout_size;
-		void initRasterizerState();
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Device> m_d3dDevice{};
@@ -39,8 +37,6 @@ namespace dx3d
 		Microsoft::WRL::ComPtr<IDXGIDevice> m_dxgiDevice{};
 		Microsoft::WRL::ComPtr<IDXGIAdapter> m_dxgiAdapter{};
 		Microsoft::WRL::ComPtr<IDXGIFactory> m_dxgiFactory{};
-		Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_cull_front_state = nullptr;
-		Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_cull_back_state = nullptr;
 	};
 }
 
