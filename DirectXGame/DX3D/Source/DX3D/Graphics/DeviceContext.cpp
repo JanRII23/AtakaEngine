@@ -12,6 +12,8 @@ dx3d::DeviceContext::DeviceContext(const GraphicsResourceDesc& gDesc): GraphicsR
 {
 	DX3DGraphicsLogThrowOnFail(m_device.CreateDeferredContext(0, &m_context),
 		"CreateDeferredContext Failed.");
+
+	initRasterizerState();
 }
 
 void dx3d::DeviceContext::clearAndSetBackBuffer(const SwapChain& swapChain, const Vec4& color)
@@ -83,42 +85,19 @@ void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
 	m_context->IASetIndexBuffer(buffer.m_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 }
 
-dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_world_cam, f32 delta_time) const noexcept
+dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, MatrixCams& cameras) noexcept
 {
 	constant cc;
-	//RECT rc{ 0, 0, size.width, size.height };
 
-	Matrix4x4 temp;
-	Matrix4x4 m_light_rot_matrix;
-	m_light_rot_matrix.setIdentity();
-	m_light_rot_matrix.setRotationY(attr.m_current_light_rot_y);
+	updateCamera(cc, attr, cameras);
+	updateModel(cc, attr, cameras);
 
-	cc.m_light_direction = m_light_rot_matrix.getZDirection();
+	return cc;
+}
 
-	//cc.m_world.setScaleVector3D(Vector3D::lerp(Vector3D(0.5, 0.5, 0), Vector3D(1.0f, 1.0f, 0), (sin(m_delta_scale) + 1.0f) / 2.0f));
-	//temp.setTranslationVector3D(Vector3D::lerp(Vector3D(-1.5f, -1.5f, 0), Vector3D(1.5f, 1.5, 0), m_delta_pos));
-
-	//cc.m_world *= temp;
-
-	// NOTE: old setup #1
-	//cc.m_world.setIdentity();
-
-	//cc.m_world.setScaleVector3D(Vector3D(attr.m_scale_cube, attr.m_scale_1cube, attr.m_scale_cube));
-
-	////temp.setRotationZ(attr.m_delta_scale);
-	//temp.setRotationZ(0.0f);
-	//cc.m_world *= temp;
-
-	////temp.setRotationY(attr.m_delta_scale);
-	//temp.setRotationY(attr.m_rot_y);
-	//cc.m_world *= temp;
-
-	////temp.setRotationX(attr.m_delta_scale);
-	//temp.setRotationX(attr.m_rot_x);
-	//cc.m_world *= temp;
-	//NOTE: old setup #2
-
-	Matrix4x4 world_cam;
+void dx3d::DeviceContext::updateCamera(constant& cc, QuadPositionAttr attr, MatrixCams& cameras)
+{
+	Matrix4x4 world_cam, temp;
 	world_cam.setIdentity();
 
 	temp.setIdentity();
@@ -147,45 +126,72 @@ dx3d::constant dx3d::DeviceContext::update(QuadPositionAttr attr, Matrix4x4 m_wo
 	temp.setTranslationVector3D(Vector3D(0, 0, 5));
 	cc.m_world *= temp;
 
-	Vector3D new_pos = m_world_cam.getTranslation() + world_cam.getZDirection() * (attr.m_current_forward * 0.3f);
+	Vector3D new_pos = cameras.m_world_cam.getTranslation() + world_cam.getZDirection() * (attr.m_current_forward * 0.3f);
 
-	new_pos = new_pos + world_cam.getXDirection() * (attr.m_current_rightward * 0.3f); 
+	new_pos = new_pos + world_cam.getXDirection() * (attr.m_current_rightward * 0.3f);
 
 	world_cam.setTranslation(new_pos);
 
-	cc.m_camera_position = new_pos;
-
-	m_world_cam = world_cam;
+	cameras.m_world_cam = world_cam;
 
 	world_cam.inverse();
-
-	// NOTE: old setup #1
-	//cc.m_view.setIdentity();
-	//NOTE: old setup #2
-	 
-	cc.m_view = world_cam;
+	
+	cameras.m_view_cam = world_cam;
 
 	//NOTE: setting an override for now, but ideally needs to be tied to window size set by the user (main.cpp pretty sure 1280, 720) is the window size
-	/*cc.m_proj.setOrthoLH(
-		2.0f,
-		2.0f,
-		-4.0f,
-		4.0f
-	);*/
-
-	//cc.m_proj.setOrthoLH(
-	//	((rc.right - rc.left) / 10.0f) + std::abs(widthExtra),
-	//	((rc.bottom - rc.top) / 10.0f) + std::abs(heightExtra),
-	//	-4.0f,
-	//	4.0f
-	//);
-
 
 	//NOTE: Rect struct setup in such a way where width = right & bottom = height
 	int width = (attr.size.width - attr.size.left);
 	int height = (attr.size.height - attr.size.top);
+	
+	cameras.m_proj_cam.setPerspectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.0f);
+}
 
-	cc.m_proj.setPerspectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.0f);
+void dx3d::DeviceContext::updateModel(constant& cc, QuadPositionAttr attr, MatrixCams& cameras)
+{
+	Matrix4x4 m_light_rot_matrix;
+	m_light_rot_matrix.setIdentity();
+	m_light_rot_matrix.setRotationY(attr.m_current_light_rot_y);
+
+	cc.m_view = cameras.m_view_cam;
+	cc.m_proj = cameras.m_proj_cam;
+	cc.m_camera_position = cameras.m_world_cam.getTranslation();
+	cc.m_light_direction = m_light_rot_matrix.getZDirection();
+}
+
+dx3d::constant dx3d::DeviceContext::updateSkyBox(QuadPositionAttr attr, MatrixCams& cameras) noexcept
+{
+	constant cc;
+
+	cc.m_world.setIdentity();
+	cc.m_world.setScale(Vector3D(100.0f, 100.0f, 100.0f));
+	cc.m_world.setTranslation(cameras.m_world_cam.getTranslation());
+	cc.m_view = cameras.m_view_cam;
+	cc.m_proj = cameras.m_proj_cam;
 
 	return cc;
+}
+
+void dx3d::DeviceContext::setRasterizerState(bool cull_front)
+{
+	if (cull_front) {
+		m_context->RSSetState(m_cull_front_state.Get());
+	} else {
+		m_context->RSSetState(m_cull_back_state.Get());
+	}
+}
+
+void dx3d::DeviceContext::initRasterizerState()
+{
+	D3D11_RASTERIZER_DESC desc = {};
+	desc.CullMode = D3D11_CULL_FRONT;
+	desc.DepthClipEnable = true;
+
+	desc.FillMode = D3D11_FILL_SOLID;
+	DX3DGraphicsLogThrowOnFail(m_device.CreateRasterizerState(&desc, &m_cull_front_state),
+		"CreateRasterizerState CULL_FRONT Failed.");
+
+	desc.CullMode = D3D11_CULL_BACK;
+	DX3DGraphicsLogThrowOnFail(m_device.CreateRasterizerState(&desc, &m_cull_back_state),
+		"CreateRasterizerState CULL_BACK Failed.");
 }

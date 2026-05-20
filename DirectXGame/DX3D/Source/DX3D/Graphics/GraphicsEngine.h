@@ -44,6 +44,10 @@ namespace dx3d
 		TextureManager* getTextureManager() noexcept;
 		MeshManager* getMeshManager();
 
+		void drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, const TexturePtr& texType);
+
+		ShaderBinaryPtr compileShaderType(const char* shaderFilePath, GraphicsDevice& device, const char* shaderEntryPoint, ShaderType shaderType);
+
 	private:
 		struct Vertex
 		{
@@ -56,14 +60,18 @@ namespace dx3d
 		std::shared_ptr<GraphicsDevice> m_graphicsDevice{};
 		DeviceContextPtr m_deviceContext{};
 		GraphicsPipelineStatePtr m_pipeline{};
+		GraphicsPipelineStatePtr m_sky_pipeline{};
 		VertexBufferPtr m_vb{};
 		ConstantBufferPtr m_cb{};
+		ConstantBufferPtr m_sky_cb{};
 		IndexBufferPtr m_ib{};
 		TextureManager * m_tex_manager = nullptr;
 		TextureBufferPtr m_tex{};
 		TexturePtr m_wood_tex;
+		TexturePtr m_sky_tex;
 		MeshManager* m_mesh_manager = nullptr;
 		MeshPtr m_mesh;
+		MeshPtr m_sky_mesh;
 
 		unsigned char m_mesh_layout_byte_code[1024];
 		size_t m_mesh_layout_size = 0;
@@ -91,6 +99,8 @@ namespace dx3d
 		bool m_auto_rotate = false;
 
 		Matrix4x4 m_world_cam;
+		Matrix4x4 m_view_cam;
+		Matrix4x4 m_proj_cam;
 	};
 }
 

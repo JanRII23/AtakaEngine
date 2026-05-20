@@ -215,5 +215,6 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="DX3D\Assets\Shaders\VertexMeshLayoutShader.hlsl" />
+    <FxCompile Include="DX3D\Assets\Shaders\SkyBoxShader.hlsl" />
   </ItemGroup>
 </Project>

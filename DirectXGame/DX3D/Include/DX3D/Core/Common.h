@@ -44,7 +44,8 @@ namespace dx3d
 	{
 		VertexShader = 0,
 		PixelShader,
-		VertexMeshLayoutShader
+		VertexMeshLayoutShader,
+		SkyBoxShader
 	};
 
 	struct ShaderCompileDesc
@@ -114,6 +115,13 @@ namespace dx3d
 		f32 m_current_rightward;
 		f32 m_light_rot_y;
 		f32 m_current_light_rot_y;
+	};
+
+	struct MatrixCams
+	{
+		Matrix4x4 m_world_cam;
+		Matrix4x4 m_view_cam;
+		Matrix4x4 m_proj_cam;
 	};
 
 	struct GameDesc

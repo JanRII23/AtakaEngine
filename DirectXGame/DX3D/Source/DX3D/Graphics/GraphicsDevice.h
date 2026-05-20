@@ -25,7 +25,6 @@ namespace dx3d
 		ID3D11Device* getD3DDevice() const noexcept;
 		void getVertexMeshLayoutShaderByteCodeAndSize(void** byte_code, size_t* size);
 
-
 		void executeCommandList(DeviceContext& context);
 	private:
 		GraphicsResourceDesc getGraphicsResourceDesc() const noexcept;

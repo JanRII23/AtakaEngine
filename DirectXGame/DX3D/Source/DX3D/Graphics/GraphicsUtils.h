@@ -14,6 +14,7 @@ namespace dx3d
 			case ShaderType::VertexShader: return "vs_5_0";
 			case ShaderType::PixelShader: return "ps_5_0";
             case ShaderType::VertexMeshLayoutShader: return "vs_5_0";
+            case ShaderType::SkyBoxShader: return "ps_5_0";
 			default: return "";
 			}
 		}

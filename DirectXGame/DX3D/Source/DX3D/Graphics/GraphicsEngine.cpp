@@ -45,6 +45,9 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	auto ps = device.compileShader({ shaderFilePath, shaderSourceCode, shaderSourceCodeSize, "PSMain", ShaderType::PixelShader });
 	auto vsSig = device.createVertexShaderSignature({ vs });
 
+	auto m_sky_ps = compileShaderType("DX3D/Assets/Shaders/SkyBoxShader.hlsl", device,
+		"psmain", ShaderType::SkyBoxShader);
+
 	m_mesh_manager = new MeshManager();
 	if (!m_mesh_manager) DX3DLogThrowError("Failed to create Mesh Manager.");
 
@@ -68,6 +71,8 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_pipeline = device.createGraphicsPipelineState({ *vsSig, *ps });
 
+	m_sky_pipeline = device.createGraphicsPipelineState({ *vsSig, *m_sky_ps });
+
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
 
@@ -77,11 +82,12 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/brick.png", *m_graphicsDevice);
 
-	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/statue.obj", *m_graphicsDevice);
+	m_sky_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/sky.jpg", *m_graphicsDevice);
 
-	//TODO: there is still some issue with the field of view on mousemove moving out of frame for the statue.obj (need a way to where it actually rotates around the object)
+	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/suzanne.obj", *m_graphicsDevice);
 
-	//TODO: ideally needs to be refactored to rotate around the object
+	m_sky_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/sphere.obj", *m_graphicsDevice);
+
 	m_world_cam.setTranslation(Vector3D(0, 0, 3));
 
 	//TODO: note the transformation is still needs a bit more refinement before its smooth completely
@@ -159,6 +165,7 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	constant cc;
 	m_cb = device.createConstantBuffer({ &cc, sizeof(constant) });
 	m_tex = device.createTextureBufferPtr({ &cc, sizeof(constant) });
+	m_sky_cb = device.createConstantBuffer({ &cc, sizeof(constant) });
 
 	i32 index_list[] =
 	{
@@ -198,34 +205,37 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 
 	auto& context = *m_deviceContext;
 	context.clearAndSetBackBuffer(swapChain, { 0.27f, 0.39f, 0.55f, 1.0f });
-	context.setGraphicsPipelineState(*m_pipeline);
 	
 	context.setViewportSize(swapChain.getSize());
 
 	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward, m_current_light_rot_y };
 
+	MatrixCams cameras = {
+		m_world_cam,
+		m_world_cam,
+		m_world_cam
+	};
+
 	attr.m_current_forward = m_current_forward;
 	attr.m_current_rightward = m_current_rightward;
 	attr.m_current_light_rot_y = m_current_light_rot_y;
 	
-	auto cc = context.update(attr, m_world_cam, m_delta_time);
-
-	auto& cb = *m_cb;
-	context.setConstantBuffer(cb, cc);
-
-	auto& tex = *m_tex;
-	context.setTextureBuffer(tex, cc, m_wood_tex);
-
-	auto& vb = *m_mesh->getVertexBuffer();
-	context.setVertexBuffer(vb);
-
-	auto& mb = *m_mesh->getIndexBuffer();
-	context.setIndexBuffer(mb);
-
-	//context.drawTriangleList(vb.getVertexListSize(), 0u); -> DRAWS A TRIANGLE
-	context.drawIndexedTriangleList(mb.getSizeIndexList(), 0u, 0u);
-
 	auto& device = *m_graphicsDevice;
+
+	// COMPUTE TRANSORMATION MATRICES
+	auto cc = context.update(attr, cameras);
+	auto cc_sky = context.updateSkyBox(attr, cameras);
+
+	//RENDER MODEL
+	context.setRasterizerState(false);
+	context.setGraphicsPipelineState(*m_pipeline);
+	drawMesh(m_mesh, cc, context, m_wood_tex);
+
+	//RENDER SKYBOX/SPHERE
+	context.setRasterizerState(true);
+	context.setGraphicsPipelineState(*m_sky_pipeline);
+	drawMesh(m_sky_mesh, cc_sky, context, m_sky_tex);
+
 	device.executeCommandList(context);
 	swapChain.present();
 }
@@ -372,4 +382,38 @@ TextureManager* dx3d::GraphicsEngine::getTextureManager() noexcept
 MeshManager* dx3d::GraphicsEngine::getMeshManager()
 {
 	return m_mesh_manager;
+}
+
+void dx3d::GraphicsEngine::drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, const TexturePtr& texType)
+{
+	auto& cb = *m_cb;
+	context.setConstantBuffer(cb, cc);
+
+	auto& tex = *m_tex;
+	context.setTextureBuffer(tex, cc, texType);
+
+	auto& vb = *mesh->getVertexBuffer();
+	context.setVertexBuffer(vb);
+
+	auto& mb = *mesh->getIndexBuffer();
+	context.setIndexBuffer(mb);
+
+	context.drawIndexedTriangleList(mb.getSizeIndexList(), 0u, 0u);
+}
+
+ShaderBinaryPtr dx3d::GraphicsEngine::compileShaderType(const char* shaderFilePath, GraphicsDevice& device, const char* shaderEntryPoint, ShaderType shaderType)
+{
+	std::ifstream shaderStream(shaderFilePath);
+
+	if (!shaderStream) DX3DLogThrowError("Failed to open shader file.");
+
+	std::string shaderFileData{
+		std::istreambuf_iterator<char>(shaderStream),
+		std::istreambuf_iterator<char>()
+	};
+
+	auto shaderSourceCode = shaderFileData.c_str();
+	auto shaderSourceCodeSize = shaderFileData.length();
+
+	return device.compileShader({ shaderFilePath, shaderSourceCode, shaderSourceCodeSize, shaderEntryPoint, shaderType });
 }
