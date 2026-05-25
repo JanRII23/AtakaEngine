@@ -8,8 +8,10 @@ namespace dx3d
 	{
 	public:
 		SwapChain(const SwapChainDesc& desc, const GraphicsResourceDesc& gDesc);
-		Rect getSize() const noexcept;
+		Rect getSize() noexcept;
+		void resize(unsigned int width, unsigned int height);
 		void present(bool vsync = false);
+		void setFullScreen(bool fullscreen, unsigned int width, unsigned int height);
 	private:
 		void reloadBuffers(const SwapChainDesc& desc, const GraphicsResourceDesc& gDesc);
 	private:

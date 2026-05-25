@@ -15,22 +15,39 @@ dx3d::SwapChain::SwapChain(const SwapChainDesc& desc, const GraphicsResourceDesc
 	dxgiDesc.SampleDesc.Count = 1;
 	dxgiDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	dxgiDesc.Windowed = TRUE;
+	dxgiDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	DX3DGraphicsLogThrowOnFail(m_factory.CreateSwapChain(&m_device, &dxgiDesc, &m_swapChain),
 		"CreateSwapChain Failed.");
 
+	resize(desc.winSize.width, desc.winSize.height);
 	reloadBuffers(desc, gDesc);
 }
 
-dx3d::Rect dx3d::SwapChain::getSize() const noexcept
+dx3d::Rect dx3d::SwapChain::getSize() noexcept
 {
+	m_size.width = ::GetSystemMetrics(SM_CXSCREEN);
+	m_size.height = ::GetSystemMetrics(SM_CYSCREEN);
 	return m_size;
+}
+
+void dx3d::SwapChain::resize(unsigned int width, unsigned int height)
+{
+	if (m_rtv) m_rtv->Release();
+	if (m_dsv) m_dsv->Release();
+	m_swapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 }
 
 void dx3d::SwapChain::present(bool vsync)
 {
 	DX3DGraphicsLogThrowOnFail(m_swapChain->Present(vsync, 0),
 		"Present Failed.");
+}
+
+void dx3d::SwapChain::setFullScreen(bool fullscreen, unsigned int width, unsigned int height)
+{
+	resize(width, height);
+	m_swapChain->SetFullscreenState(fullscreen, nullptr);
 }
 
 void dx3d::SwapChain::reloadBuffers(const SwapChainDesc& desc, const GraphicsResourceDesc& gDesc)
