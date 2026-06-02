@@ -26,6 +26,7 @@ namespace dx3d
 		void updateLightPosition();
 		void onFocus() override;
 		void onKillFocus() override;
+		void onSize() override;
 
 		//NOTE: Inherited via InputListener
 		void onKeyDown(int key) override;
@@ -47,6 +48,7 @@ namespace dx3d
 		void drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, const TexturePtr& texType);
 
 		ShaderBinaryPtr compileShaderType(const char* shaderFilePath, GraphicsDevice& device, const char* shaderEntryPoint, ShaderType shaderType);
+		Rect getClientWindowRect() const noexcept;
 
 	private:
 		struct Vertex
@@ -72,6 +74,7 @@ namespace dx3d
 		MeshManager* m_mesh_manager = nullptr;
 		MeshPtr m_mesh;
 		MeshPtr m_sky_mesh;
+		SwapChainPtr m_swapChain{};
 
 		unsigned char m_mesh_layout_byte_code[1024];
 		size_t m_mesh_layout_size = 0;
@@ -101,6 +104,9 @@ namespace dx3d
 		Matrix4x4 m_world_cam;
 		Matrix4x4 m_view_cam;
 		Matrix4x4 m_proj_cam;
+
+		bool m_play_state = false;
+		bool m_fullscreen_state = false;
 	};
 }
 

@@ -74,7 +74,7 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	m_sky_pipeline = device.createGraphicsPipelineState({ *vsSig, *m_sky_ps });
 
 	InputSystem::get()->addListener(this);
-	InputSystem::get()->showCursor(false);
+	m_play_state = true;
 
 	m_tex_manager = new TextureManager();
 	if (!m_tex_manager) DX3DLogThrowError("Failed to create Texture Manager.");
@@ -285,6 +285,12 @@ void dx3d::GraphicsEngine::onKillFocus()
 	InputSystem::get()->removeListener(this);
 }
 
+void dx3d::GraphicsEngine::onSize()
+{
+	Rect rc = getClientWindowRect();
+	m_swapChain->resize(rc.width, rc.height);
+}
+
 void dx3d::GraphicsEngine::onKeyDown(int key)
 {
 	switch (key) {
@@ -320,21 +326,29 @@ void dx3d::GraphicsEngine::onKeyUp(int key)
 	case ('D'):
 		m_rightward = 0.0f;
 		break;
+	case ('G'):
+		m_play_state = (m_play_state) ? false : true;
+		InputSystem::get()->showCursor(!m_play_state);
+		break;
+	case ('F'):
+		m_fullscreen_state = (m_fullscreen_state) ? false : true;
+		if (m_fullscreen_state) {
+			Rect size_screen = getClientWindowRect();
+			m_swapChain->setFullScreen(true, size_screen.width, size_screen.height);
+		}
+		break;
 	default: break;
 	}
 }
 
 void dx3d::GraphicsEngine::onMouseMove(const Point& mouse_pos, const Rect& size)
 {
+	if (!m_play_state) return;
+
 	int width = size.width - size.left;
 	int height = size.height - size.top;
 
 	constexpr float mouse_sensitivity = 0.0050f;
-
-	//if (m_middle_mouse_down)
-	//{
-	//	
-	//}
 
 	m_rot_x += (mouse_pos.m_y - (height / 2.0f)) * mouse_sensitivity * 0.1f;
 	m_rot_y += (mouse_pos.m_x - (width / 2.0f)) * mouse_sensitivity * 0.1f;
@@ -416,4 +430,9 @@ ShaderBinaryPtr dx3d::GraphicsEngine::compileShaderType(const char* shaderFilePa
 	auto shaderSourceCodeSize = shaderFileData.length();
 
 	return device.compileShader({ shaderFilePath, shaderSourceCode, shaderSourceCodeSize, shaderEntryPoint, shaderType });
+}
+
+Rect dx3d::GraphicsEngine::getClientWindowRect() const noexcept
+{
+	return m_swapChain->getSize();
 }

@@ -18,6 +18,7 @@ namespace dx3d
 
 		void onFocus() override;
 		void onKillFocus() override;
+		virtual void onSize();
 
 	protected:
 		void* m_handle{};
