@@ -71,13 +71,19 @@ void dx3d::DeviceContext::setConstantBuffer(const ConstantBuffer& buffer, consta
 	m_context->PSSetConstantBuffers(0, 1, &buf);
 }
 
-void dx3d::DeviceContext::setTextureBuffer(const TextureBuffer& buffer, constant cc, TexturePtr texture)
+void dx3d::DeviceContext::setTextureBuffer(const TextureBuffer& buffer, constant cc, TexturePtr* texture, unsigned int num_textures)
 {
 	auto buf = buffer.m_buffer.Get();
 
 	m_context->UpdateSubresource(buf, NULL, NULL, &cc, NULL, NULL);
-	m_context->VSSetShaderResources(0, 1, &texture->m_shader_res_view);
-	m_context->PSSetShaderResources(0, 1, &texture->m_shader_res_view);
+
+	ID3D11ShaderResourceView* list_res[32];
+	for (unsigned int i = 0; i < num_textures; i++) {
+		list_res[i] = texture[i]->m_shader_res_view;
+	}
+
+	m_context->VSSetShaderResources(0, num_textures, list_res);
+	m_context->PSSetShaderResources(0, num_textures, list_res);
 }
 
 void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)

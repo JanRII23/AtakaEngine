@@ -1,5 +1,8 @@
-Texture2D Texture : register(t0);
-sampler TextureSampler : register(s0);
+Texture2D EarthColor : register(t0);
+sampler EarthColorSampler : register(s0);
+
+Texture2D EarthSpecular : register(t1);
+sampler EarthSpecularSampler : register(s1);
 
 struct VSInput
 {
@@ -53,22 +56,28 @@ VSOutput VSMain(VSInput input)
 
 float4 PSMain(VSOutput input) : SV_Target
 {
+    float4 earth_color = EarthColor.Sample(EarthColorSampler, 1.0 - input.texcoord);
+    float4 earth_spec = EarthSpecular.Sample(EarthSpecularSampler, 1.0 - input.texcoord).r;
+    
     //AMBIENT LIGHT
-    float ka = 0.1;
-    float3 ia = float3(1.0, 1.0, 1.0);
+    float ka = 1.5;
+    float3 ia = float3(0.09, 0.082, 0.082);
+    ia *= earth_color.rgb;
     
     float3 ambient_light = ka * ia;
     
     //DIFFUSE LIGHT
     float kd = 0.7;
     float3 id = float3(1.0, 1.0, 1.0);
+    id *= earth_color.rgb;
+    
     float amount_diffuse_light = max(0.0, dot(m_light_direction.xyz, input.normal));
     
     float3 diffuse_light = kd * amount_diffuse_light * id;
     //DIFFUSE LIGHT
     
     //SPECULAR LIGHT
-    float ks = 1.0;
+    float ks = earth_spec;
     float3 is = float3(1.0, 1.0, 1.0);
     float3 reflected_light = reflect(-m_light_direction.xyz, input.normal);
     float shininess = 30.0;

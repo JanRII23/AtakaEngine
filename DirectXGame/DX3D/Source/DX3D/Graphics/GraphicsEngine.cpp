@@ -80,11 +80,13 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	if (!m_tex_manager) DX3DLogThrowError("Failed to create Texture Manager.");
 	
 
-	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/brick.png", *m_graphicsDevice);
+	m_earth_color_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/earth_color.jpg", *m_graphicsDevice);
 
-	m_sky_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/sky.jpg", *m_graphicsDevice);
+	m_earth_spec_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/earth_spec.jpg", *m_graphicsDevice);
 
-	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/suzanne.obj", *m_graphicsDevice);
+	m_sky_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/stars_map.jpg", *m_graphicsDevice);
+
+	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/sphere_hq.obj", *m_graphicsDevice);
 
 	m_sky_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/sphere.obj", *m_graphicsDevice);
 
@@ -229,12 +231,20 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	//RENDER MODEL
 	context.setRasterizerState(false);
 	context.setGraphicsPipelineState(*m_pipeline);
-	drawMesh(m_mesh, cc, context, m_wood_tex);
+
+	TexturePtr list_tex[2];
+	list_tex[0] = m_earth_color_tex;
+	list_tex[1] = m_earth_spec_tex;
+
+	drawMesh(m_mesh, cc, context, list_tex, 2);
 
 	//RENDER SKYBOX/SPHERE
 	context.setRasterizerState(true);
 	context.setGraphicsPipelineState(*m_sky_pipeline);
-	drawMesh(m_sky_mesh, cc_sky, context, m_sky_tex);
+
+	list_tex[0] = m_sky_tex;
+
+	drawMesh(m_sky_mesh, cc_sky, context, list_tex, 1);
 
 	device.executeCommandList(context);
 	swapChain.present();
@@ -398,13 +408,13 @@ MeshManager* dx3d::GraphicsEngine::getMeshManager()
 	return m_mesh_manager;
 }
 
-void dx3d::GraphicsEngine::drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, const TexturePtr& texType)
+void dx3d::GraphicsEngine::drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, TexturePtr* list_tex, unsigned int num_textures)
 {
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);
 
 	auto& tex = *m_tex;
-	context.setTextureBuffer(tex, cc, texType);
+	context.setTextureBuffer(tex, cc, list_tex, num_textures);
 
 	auto& vb = *mesh->getVertexBuffer();
 	context.setVertexBuffer(vb);

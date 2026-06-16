@@ -17,7 +17,7 @@ namespace dx3d
 		void drawTriangleList(ui32 vertexCount, ui32 startVertexLocation);
 		void drawIndexedTriangleList(ui32 index_count, ui32 start_vertex_index, ui32 start_index_location);
 		void setConstantBuffer(const ConstantBuffer& buffer, constant cc);
-		void setTextureBuffer(const TextureBuffer& buffer, constant cc, TexturePtr texture);
+		void setTextureBuffer(const TextureBuffer& buffer, constant cc, TexturePtr* texture, unsigned int num_textures);
 		void setIndexBuffer(const IndexBuffer& buffer);
 		void setRasterizerState(bool cull_front);
 		constant update(QuadPositionAttr attr, MatrixCams& cameras) noexcept;

@@ -45,7 +45,7 @@ namespace dx3d
 		TextureManager* getTextureManager() noexcept;
 		MeshManager* getMeshManager();
 
-		void drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, const TexturePtr& texType);
+		void drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, TexturePtr* list_tex, unsigned int num_textures);
 
 		ShaderBinaryPtr compileShaderType(const char* shaderFilePath, GraphicsDevice& device, const char* shaderEntryPoint, ShaderType shaderType);
 		Rect getClientWindowRect() const noexcept;
@@ -69,7 +69,8 @@ namespace dx3d
 		IndexBufferPtr m_ib{};
 		TextureManager * m_tex_manager = nullptr;
 		TextureBufferPtr m_tex{};
-		TexturePtr m_wood_tex;
+		TexturePtr m_earth_color_tex;
+		TexturePtr m_earth_spec_tex;
 		TexturePtr m_sky_tex;
 		MeshManager* m_mesh_manager = nullptr;
 		MeshPtr m_mesh;
