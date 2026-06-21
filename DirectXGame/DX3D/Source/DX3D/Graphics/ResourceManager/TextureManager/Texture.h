@@ -13,6 +13,7 @@ namespace dx3d
 		ID3D11Device* m_device = nullptr;
 		ID3D11Resource* m_texture = nullptr;
 		ID3D11ShaderResourceView* m_shader_res_view = nullptr;
+		ID3D11SamplerState* m_sampler_state = nullptr;
 		friend class DeviceContext;
 	};
 }

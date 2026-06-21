@@ -115,6 +115,7 @@ namespace dx3d
 		f32 m_current_rightward;
 		f32 m_light_rot_y;
 		f32 m_current_light_rot_y;
+		f32 m_time;
 	};
 
 	struct MatrixCams
@@ -138,5 +139,6 @@ namespace dx3d
 		Matrix4x4 m_proj;
 		Vector4D m_light_direction;
 		Vector4D m_camera_position;
+		float m_time = 0.0f;
 	};
 }

@@ -80,11 +80,17 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 	if (!m_tex_manager) DX3DLogThrowError("Failed to create Texture Manager.");
 	
 
-	m_wood_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/brick.png", *m_graphicsDevice);
+	m_earth_color_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/earth_color.jpg", *m_graphicsDevice);
 
-	m_sky_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/sky.jpg", *m_graphicsDevice);
+	m_earth_spec_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/earth_spec.jpg", *m_graphicsDevice);
 
-	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/suzanne.obj", *m_graphicsDevice);
+	m_clouds_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/clouds.jpg", *m_graphicsDevice);
+
+	m_earth_night_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/earth_night.jpg", *m_graphicsDevice);
+
+	m_sky_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/stars_map.jpg", *m_graphicsDevice);
+
+	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/sphere_hq.obj", *m_graphicsDevice);
 
 	m_sky_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/sphere.obj", *m_graphicsDevice);
 
@@ -208,7 +214,7 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
-	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward, m_current_light_rot_y };
+	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward, m_current_light_rot_y, m_time };
 
 	MatrixCams cameras = {
 		m_world_cam,
@@ -219,6 +225,7 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	attr.m_current_forward = m_current_forward;
 	attr.m_current_rightward = m_current_rightward;
 	attr.m_current_light_rot_y = m_current_light_rot_y;
+	attr.m_time = m_time;
 	
 	auto& device = *m_graphicsDevice;
 
@@ -229,12 +236,22 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	//RENDER MODEL
 	context.setRasterizerState(false);
 	context.setGraphicsPipelineState(*m_pipeline);
-	drawMesh(m_mesh, cc, context, m_wood_tex);
+
+	TexturePtr list_tex[4];
+	list_tex[0] = m_earth_color_tex;
+	list_tex[1] = m_earth_spec_tex;
+	list_tex[2] = m_clouds_tex;
+	list_tex[3] = m_earth_night_tex;
+
+	drawMesh(m_mesh, cc, context, list_tex, 4);
 
 	//RENDER SKYBOX/SPHERE
 	context.setRasterizerState(true);
 	context.setGraphicsPipelineState(*m_sky_pipeline);
-	drawMesh(m_sky_mesh, cc_sky, context, m_sky_tex);
+
+	list_tex[0] = m_sky_tex;
+
+	drawMesh(m_sky_mesh, cc_sky, context, list_tex, 1);
 
 	device.executeCommandList(context);
 	swapChain.present();
@@ -254,6 +271,7 @@ void dx3d::GraphicsEngine::updateTime()
 	m_new_delta = ::GetTickCount64();
 
 	m_delta_time = (m_old_delta) ? ((m_new_delta - m_old_delta) / 1000.0f) : 0;
+	m_time += m_delta_time;
 
 	if (m_auto_rotate)
 	{
@@ -272,7 +290,7 @@ void dx3d::GraphicsEngine::updateTargetPosition()
 
 void dx3d::GraphicsEngine::updateLightPosition()
 {
-	m_current_light_rot_y += 0.707f * m_delta_time;
+	m_current_light_rot_y += 0.307f * m_delta_time;
 }
 
 void dx3d::GraphicsEngine::onFocus()
@@ -398,13 +416,13 @@ MeshManager* dx3d::GraphicsEngine::getMeshManager()
 	return m_mesh_manager;
 }
 
-void dx3d::GraphicsEngine::drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, const TexturePtr& texType)
+void dx3d::GraphicsEngine::drawMesh(const MeshPtr& mesh, auto cc, DeviceContext& context, TexturePtr* list_tex, unsigned int num_textures)
 {
 	auto& cb = *m_cb;
 	context.setConstantBuffer(cb, cc);
 
 	auto& tex = *m_tex;
-	context.setTextureBuffer(tex, cc, texType);
+	context.setTextureBuffer(tex, cc, list_tex, num_textures);
 
 	auto& vb = *mesh->getVertexBuffer();
 	context.setVertexBuffer(vb);
