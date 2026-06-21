@@ -78,12 +78,17 @@ void dx3d::DeviceContext::setTextureBuffer(const TextureBuffer& buffer, constant
 	m_context->UpdateSubresource(buf, NULL, NULL, &cc, NULL, NULL);
 
 	ID3D11ShaderResourceView* list_res[32];
+	ID3D11SamplerState* list_sampler[32];
 	for (unsigned int i = 0; i < num_textures; i++) {
 		list_res[i] = texture[i]->m_shader_res_view;
+		list_sampler[i] = texture[i]->m_sampler_state;
 	}
 
 	m_context->VSSetShaderResources(0, num_textures, list_res);
+	m_context->VSSetSamplers(0, num_textures, list_sampler);
+
 	m_context->PSSetShaderResources(0, num_textures, list_res);
+	m_context->PSSetSamplers(0, num_textures, list_sampler);
 }
 
 void dx3d::DeviceContext::setIndexBuffer(const IndexBuffer& buffer)
@@ -163,6 +168,7 @@ void dx3d::DeviceContext::updateModel(constant& cc, QuadPositionAttr attr, Matri
 	cc.m_proj = cameras.m_proj_cam;
 	cc.m_camera_position = cameras.m_world_cam.getTranslation();
 	cc.m_light_direction = m_light_rot_matrix.getZDirection();
+	cc.m_time = attr.m_time;
 }
 
 dx3d::constant dx3d::DeviceContext::updateSkyBox(QuadPositionAttr attr, MatrixCams& cameras) noexcept

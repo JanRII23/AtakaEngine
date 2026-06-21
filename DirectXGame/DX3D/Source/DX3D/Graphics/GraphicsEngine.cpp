@@ -84,6 +84,10 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_earth_spec_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/earth_spec.jpg", *m_graphicsDevice);
 
+	m_clouds_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/clouds.jpg", *m_graphicsDevice);
+
+	m_earth_night_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/earth_night.jpg", *m_graphicsDevice);
+
 	m_sky_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/stars_map.jpg", *m_graphicsDevice);
 
 	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/sphere_hq.obj", *m_graphicsDevice);
@@ -210,7 +214,7 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	
 	context.setViewportSize(swapChain.getSize());
 
-	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward, m_current_light_rot_y };
+	QuadPositionAttr attr = { swapChain.getSize(), m_delta_pos, m_delta_scale, m_rot_x, m_rot_y, m_scale_cube, m_forward, m_current_forward, m_rightward, m_current_rightward, m_current_light_rot_y, m_time };
 
 	MatrixCams cameras = {
 		m_world_cam,
@@ -221,6 +225,7 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	attr.m_current_forward = m_current_forward;
 	attr.m_current_rightward = m_current_rightward;
 	attr.m_current_light_rot_y = m_current_light_rot_y;
+	attr.m_time = m_time;
 	
 	auto& device = *m_graphicsDevice;
 
@@ -232,11 +237,13 @@ void dx3d::GraphicsEngine::render(SwapChain& swapChain)
 	context.setRasterizerState(false);
 	context.setGraphicsPipelineState(*m_pipeline);
 
-	TexturePtr list_tex[2];
+	TexturePtr list_tex[4];
 	list_tex[0] = m_earth_color_tex;
 	list_tex[1] = m_earth_spec_tex;
+	list_tex[2] = m_clouds_tex;
+	list_tex[3] = m_earth_night_tex;
 
-	drawMesh(m_mesh, cc, context, list_tex, 2);
+	drawMesh(m_mesh, cc, context, list_tex, 4);
 
 	//RENDER SKYBOX/SPHERE
 	context.setRasterizerState(true);
@@ -264,6 +271,7 @@ void dx3d::GraphicsEngine::updateTime()
 	m_new_delta = ::GetTickCount64();
 
 	m_delta_time = (m_old_delta) ? ((m_new_delta - m_old_delta) / 1000.0f) : 0;
+	m_time += m_delta_time;
 
 	if (m_auto_rotate)
 	{
@@ -282,7 +290,7 @@ void dx3d::GraphicsEngine::updateTargetPosition()
 
 void dx3d::GraphicsEngine::updateLightPosition()
 {
-	m_current_light_rot_y += 0.707f * m_delta_time;
+	m_current_light_rot_y += 0.307f * m_delta_time;
 }
 
 void dx3d::GraphicsEngine::onFocus()

@@ -72,6 +72,8 @@ namespace dx3d
 		TexturePtr m_earth_color_tex;
 		TexturePtr m_earth_spec_tex;
 		TexturePtr m_sky_tex;
+		TexturePtr m_clouds_tex;
+		TexturePtr m_earth_night_tex;
 		MeshManager* m_mesh_manager = nullptr;
 		MeshPtr m_mesh;
 		MeshPtr m_sky_mesh;
@@ -105,6 +107,8 @@ namespace dx3d
 		Matrix4x4 m_world_cam;
 		Matrix4x4 m_view_cam;
 		Matrix4x4 m_proj_cam;
+
+		f32 m_time = 0.0f;
 
 		bool m_play_state = false;
 		bool m_fullscreen_state = false;
