@@ -90,7 +90,7 @@ dx3d::GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc): Base(desc.
 
 	m_sky_tex = m_tex_manager->createTextureFromFile(L"DX3D/Assets/Textures/stars_map.jpg", *m_graphicsDevice);
 
-	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/sphere_hq.obj", *m_graphicsDevice);
+	m_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/scene.obj", *m_graphicsDevice);
 
 	m_sky_mesh = getMeshManager()->createMeshFromFile(L"DX3D/Assets/Meshes/sphere.obj", *m_graphicsDevice);
 
